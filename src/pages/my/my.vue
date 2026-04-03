@@ -1,0 +1,9 @@
+<script>
+</script>
+<template>
+    <view>
+        我的页面
+    </view>
+</template>
+<style>
+</style>
