@@ -50,10 +50,12 @@ const handleCheckChange = () => {
         <view class="item-info">
           <view>
             <text class="item-name">Full House Deep Cleaning 4h</text>
-            <view class="item-tag">Daily Cleaning</view>
+          </view>
+          <view>
+            <view class="item-tag">种类: 深度保洁</view>
           </view>
           <view class="flex-row">
-            <text class="item-qty">Qty: x1</text>
+            <text class="item-qty">数量: x1</text>
             <text class="item-price">¥299.00</text>
           </view>
         </view>
@@ -189,7 +191,7 @@ page {
 }
 .item-qty {
   background: #e3eae7;
-  padding: 6rpx 16rpx;
+  padding: 3rpx 16rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
 }

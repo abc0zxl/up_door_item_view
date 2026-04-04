@@ -2,7 +2,7 @@
 import SangSwiper from '@/components/SangSwiper.vue';
 import { ref, onMounted } from 'vue';
 import { getHomeBannerAPI } from '@/services/home';
-import IndexNavber from './components/indexNavber.vue';
+import IndexNavber from '@/components/indexNavber.vue';
 
 const bannerList = ref([])
 
@@ -20,6 +20,13 @@ const getHomeBannerData = async () => {
 onMounted(() => {
   getHomeBannerData()
 })
+
+const navigateToGoodsList = (value) => {
+  console.log("触发了点击事件", value)
+  uni.navigateTo({
+    url: '/pages/goods/goods'
+  })
+}
 </script> 
 
 <template>
@@ -58,7 +65,7 @@ onMounted(() => {
           <text class="icon-font">1</text>
         </view>
         <text class="item-title">保洁</text>
-        <text class="item-desc">深度清洁/日常保洁</text>
+        <!-- <text class="item-desc">深度清洁/日常保洁</text> -->
       </view>
 
       <!-- 2. 维修 -->
@@ -67,16 +74,16 @@ onMounted(() => {
           <text class="icon-font">2</text>
         </view>
         <text class="item-title">维修</text>
-        <text class="item-desc">家电维护/房屋修缮</text>
+        <!-- <text class="item-desc">家电维护/房屋修缮</text> -->
       </view>
 
       <!-- 3. 换洗 -->
-      <view class="item-card">
+      <view class="item-card" value="1" @click="navigateToGoodsList(value)">
         <view class="item-icon">
           <text class="icon-font">3</text>
         </view>
         <text class="item-title">换洗</text>
-        <text class="item-desc">衣物洗护/床品除螨</text>
+        <!-- <text class="item-desc">衣物洗护/床品除螨</text> -->
       </view>
 
       <!-- 4. 搬运 -->
@@ -85,7 +92,7 @@ onMounted(() => {
           <text class="icon-font">4</text>
         </view>
         <text class="item-title">搬运</text>
-        <text class="item-desc">同城搬家/大件运输</text>
+        <!-- <text class="item-desc">同城搬家/大件运输</text> -->
       </view>
 
       <!-- 5. 喂养 -->
@@ -94,7 +101,7 @@ onMounted(() => {
           <text class="icon-font">5</text>
         </view>
         <text class="item-title">喂养</text>
-        <text class="item-desc">宠物喂养/上门遛狗</text>
+        <!-- <text class="item-desc">宠物喂养/上门遛狗</text> -->
       </view>
 
       <!-- 6. 管道 -->
@@ -103,7 +110,7 @@ onMounted(() => {
           <text class="icon-font">6</text>
         </view>
         <text class="item-title">管道</text>
-        <text class="item-desc">疏通管道/漏水检测</text>
+        <!-- <text class="item-desc">疏通管道/漏水检测</text> -->
       </view>
     </view>
 
@@ -129,14 +136,13 @@ onMounted(() => {
 /* 轮播图外层：定位基准 */
 .swiper-container {
   position: relative; /* 关键：让搜索框相对于它定位 */
-
   width: 343px;
   margin: 0 auto;
 }
 
 /* 你的轮播图：完全不动！ */
 .scroll-view {
-  background-color: #a8ffff;
+  /* background-color: #a8ffff; */
   height: 192px;
   width: 343px;
   display: flex;
@@ -147,7 +153,7 @@ onMounted(() => {
 /* 搜索框：浮在轮播图上 */
 .search-section {
   position: absolute;
-  bottom: -30px; 
+  bottom: -10px; 
   left: 0;
   right: 0;
 }
@@ -156,7 +162,7 @@ onMounted(() => {
 .search-box {
   background: white;
   border-radius: 50px;
-  height: 50px;
+  height: 40px;
   padding: 8px 10px;
   display: flex;
   align-items: center;
@@ -182,7 +188,7 @@ onMounted(() => {
   background: #FF7A00;
   color: white;
   border-radius: 60px;
-  padding: 6px 15px;
+  padding: 0px 13px;
   border: none;
   font-weight: bold;
 }
@@ -238,8 +244,8 @@ onMounted(() => {
 
 /* 图标背景 */
 .item-icon {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background-color: #ffedd5;
   border-radius: 30rpx;
   display: flex;

@@ -1,26 +1,75 @@
-<script>
+<script setup>
+import SangSwiper from '@/components/SangSwiper_category.vue';
+import { ref, onMounted } from 'vue';
+import { getHomeBannerAPI } from '@/services/home';
+// import IndexNavber from './components/indexNavber.vue';
+const bannerList = ref([])
 
-export default {
-  data() {
-    return {
-      activeIndex: 0,
-      menuList: [
-        { name: "保洁" },{ name: "清洗" },{ name: "搬家" },{ name: "月嫂" },
-        { name: "维修" },{ name: "洗护" },{ name: "甲醛" },{ name: "数码" }
-      ],
-      commonList: [
-        { icon: "cleaning_services", name: "日常保洁" },
-        { icon: "vacuum", name: "深度保洁" },
-        { icon: "window", name: "擦玻璃" }
-      ],
-      specialList: [
-        { icon: "kitchen", name: "厨房保洁" },{ icon: "bathtub", name: "卫生间保洁" },
-        { icon: "weekend", name: "沙发除螨" },{ icon: "bed", name: "床垫清洗" },
-        { icon: "ac_unit", name: "空调清洗" },{ icon: "pest_control", name: "全屋杀虫" }
-      ]
-    };
+const getHomeBannerData = async () => {
+  try {
+    const res = await getHomeBannerAPI()
+    console.log("轮播数据", res)
+    bannerList.value = res.data || []
+    console.log(bannerList.value)
+  } catch (e) {
+    console.error("请求失败", e)
   }
-};
+}
+
+onMounted(() => {
+  getHomeBannerData()
+  console.log("轮播图请求完成")
+})
+
+// const handlRquest=()=>{
+//   console.log("按钮已经点击")
+//   getHomeBannerData()
+//   console.log("手动轮播图请求完成")
+// }
+
+// 激活的索引
+const activeIndex = ref(0)
+
+// 左侧菜单
+const menuList = ref([
+  { name: "保洁" },{ name: "清洗" },{ name: "搬家" },{ name: "月嫂" },
+  { name: "维修" },{ name: "洗护" },{ name: "甲醛" },{ name: "数码" }
+])
+
+// 常用服务
+const commonList = ref([
+  { icon: "1", name: "日常保洁" },
+  { icon: "2", name: "深度保洁" },
+  { icon: "3", name: "擦玻璃" }
+])
+
+// 特色服务
+const specialList = ref([
+  { icon: "4", name: "厨房保洁" },{ icon: "7", name: "卫生间保洁" },
+  { icon: "5", name: "沙发除螨" },{ icon: "8", name: "床垫清洗" },
+  { icon: "6", name: "空调清洗" },{ icon: "9", name: "全屋杀虫" }
+])
+// export default {
+//   data() {
+//     return {
+//       activeIndex: 0,
+//       menuList: [
+//         { name: "保洁" },{ name: "清洗" },{ name: "搬家" },{ name: "月嫂" },
+//         { name: "维修" },{ name: "洗护" },{ name: "甲醛" },{ name: "数码" }
+//       ],
+//       commonList: [
+//         { icon: "cleaning_services", name: "日常保洁" },
+//         { icon: "vacuum", name: "深度保洁" },
+//         { icon: "window", name: "擦玻璃" }
+//       ],
+//       specialList: [
+//         { icon: "kitchen", name: "厨房保洁" },{ icon: "bathtub", name: "卫生间保洁" },
+//         { icon: "weekend", name: "沙发除螨" },{ icon: "bed", name: "床垫清洗" },
+//         { icon: "ac_unit", name: "空调清洗" },{ icon: "pest_control", name: "全屋杀虫" }
+//       ]
+//     };
+//   }
+// };
 </script>
 
 <template>
@@ -46,14 +95,22 @@ export default {
       <view class="right-content">
         <!-- 轮播banner -->
         <view class="banner">
+                        
           <view class="banner-mask">
-            <view class="banner-title">品质保洁</view>
-            <view class="banner-desc">专业工具 深度除菌</view>
+            <SangSwiper :list="bannerList"/>
+            <!-- <view class="banner-image"> -->
+
+              <!-- <view>轮播图外层：定位基准</view> -->
+            <!-- </view> -->
+            <!-- <view class="banner-title">品质保洁</view>
+            <view class="banner-desc">专业工具 深度除菌</view> -->
           </view>
+
         </view>
 
         <!-- 常用服务 -->
         <view class="section">
+          <!-- <button @click="handlRquest">手动请求</button> -->
           <view class="section-title">常用保洁</view>
           <view class="grid-box">
             <view v-for="(item, idx) in commonList" :key="idx" class="grid-item">
@@ -98,6 +155,7 @@ export default {
   min-height: 100vh;
   box-sizing: border-box;
   padding-bottom: 120rpx;
+  z-index: 999;
 }
 
 /* 顶部导航 */
@@ -174,21 +232,28 @@ export default {
   position: relative;
   margin-bottom: 30rpx;
 }
-.banner image {
-  width: 100%;
-  height: 100%;
-}
-.banner-mask {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, #81ffe9 50%, transparent);
-  padding: 40rpx;
+/* .banner image {
+  height: 192px;
+  width: 343px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  margin: 0 auto;
+} */
+.banner-mask {
+  /* background-color: #21ff19; */
+    /* margin-left: 150rpx; */
+  /* position: absolute;
+  left: 0;
+  top: 0; */
+  /* position: absolute; */
+  /* width: 100%;
+  height: 100%; */
+  /* background: linear-gradient(to right, #81ffe9 50%, transparent); */
+  /* padding: 40rpx; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+  /* justify-content: center; */
 }
 .banner-title {
   font-size: 32rpx;

@@ -372,9 +372,9 @@ $error: #b02500;
   border: none;
   transition: all 0.2s ease;
   
-  &:active {
-    // transform: scale(0.98);
-  }
+//   &:active {
+//     // transform: scale(0.98);
+//   }
 }
 
 .menu-left {

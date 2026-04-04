@@ -32,16 +32,16 @@ const safeAreaTop = systemInfo.safeArea?.top || 0
     display: flex;
     align-items: center;
     height: 64rpx;
-    padding-left: 30rpx;
-    padding-top: 20rpx;
+    padding-left: 60rpx;
+    padding-top: 40rpx;
     .logo-image {
-      width: 100rpx;
+      width: 90rpx;
       height: 100rpx;
     }
     .logo-text {
       flex: 1;
       line-height: 28rpx;
-      color: #ff7a21e4;
+      color: #ea580c;
       margin: 2rpx 0 0 20rpx;
       padding-left: 20rpx;
       border-left: 1rpx solid #fff;
