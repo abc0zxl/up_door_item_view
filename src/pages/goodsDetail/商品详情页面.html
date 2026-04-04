@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+
+          
+          extend: {
+            colors: {
+              "on-error-container": "#520c00",
+              "surface": "#f7f6f5",
+              "primary-fixed": "#ff851b",
+              "surface-tint": "#924700",
+              "error-dim": "#b92902",
+              "secondary-dim": "#004ca4",
+              "primary-fixed-dim": "#ee7805",
+              "on-secondary-container": "#004495",
+              "surface-container-high": "#e2e2e1",
+              "on-error": "#ffefec",
+              "on-primary-fixed": "#0f0400",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-container": "#431d00",
+              "secondary": "#0058bb",
+              "on-tertiary-fixed-variant": "#5d4600",
+              "tertiary-dim": "#654c00",
+              "on-secondary-fixed": "#003270",
+              "surface-container-low": "#f1f1f0",
+              "on-primary-fixed-variant": "#512400",
+              "on-surface": "#2e2f2f",
+              "tertiary-fixed-dim": "#e6b112",
+              "on-secondary": "#f0f2ff",
+              "primary-container": "#ff851b",
+              "tertiary": "#745700",
+              "on-tertiary-container": "#523d00",
+              "primary-dim": "#803d00",
+              "outline": "#767776",
+              "surface-bright": "#f7f6f5",
+              "on-background": "#2e2f2f",
+              "primary": "#924700",
+              "tertiary-container": "#f5bf26",
+              "on-secondary-fixed-variant": "#004da6",
+              "outline-variant": "#adadac",
+              "secondary-fixed-dim": "#a9c4ff",
+              "tertiary-fixed": "#f5bf26",
+              "surface-variant": "#dcdddc",
+              "on-primary": "#fff0e8",
+              "on-surface-variant": "#5b5c5b",
+              "background": "#f7f6f5",
+              "surface-container-highest": "#dcdddc",
+              "on-tertiary-fixed": "#392a00",
+              "inverse-surface": "#0d0e0e",
+              "secondary-fixed": "#bed2ff",
+              "on-tertiary": "#fff1d9",
+              "surface-container": "#e8e8e7",
+              "inverse-on-surface": "#9d9d9c",
+              "error": "#b02500",
+              "error-container": "#f95630",
+              "surface-dim": "#d4d4d4",
+              "secondary-container": "#bed2ff",
+              "inverse-primary": "#ff851b"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      .tonal-transition { transition: background-color 0.3s ease; }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation Header -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-sm h-16">
+<div class="flex justify-between items-center px-6 h-full w-full max-w-screen-xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface" data-icon="arrow_back">arrow_back</span>
+</button>
+</div>
+<div class="font-headline font-bold text-xl tracking-tight text-orange-600">服务详情</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface" data-icon="share">share</span>
+</button>
+</div>
+</div>
+<div class="bg-stone-100/50 h-[1px]"></div>
+</header>
+<main class="pb-32">
+<!-- Hero Banner Area -->
+<section class="relative w-full aspect-square md:aspect-[21/9] bg-surface-container overflow-hidden">
+<img alt="Professional home cleaning service" class="w-full h-full object-cover" data-alt="Professional cleaner in a bright modern apartment using eco-friendly tools, soft morning sunlight, high-end editorial photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT0EwILZl3qTm_OUu2XHfj1MZqqxacQ-HevcxhJLG2ZX7NBS4nqgQQcJgYvNTXgjqJjEYzJUqRO2SEMXnRTtJxvqaFuaC6l7OHDIte3qUnYbUIuxzMbHBEOl5TZfwvf_xCkhkYz0MnFlcg7I6dfh0fDVEV3OdyjS28MM_Cvv4JnDwSLRSCGd05B-y9HMpoVLBx-6Mpoge9xJaWURIDESiotwfwpqKbU_RXsjF7SJs91fr0Qogdn82YNBJvTepwBkAYvYWw5cADqw"/>
+<div class="absolute bottom-6 right-6 px-4 py-1.5 bg-black/30 backdrop-blur-md rounded-full text-white text-xs font-medium whitespace-nowrap">
+                1 / 5
+            </div>
+</section>
+<!-- Service Info Card -->
+<div class="px-5 -mt-8 relative z-10">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_32px_rgba(255,133,27,0.06)]">
+<!-- Re-laid out Price and Sales Stats -->
+<div class="flex items-center gap-4 mb-4">
+<div class="flex items-baseline gap-1 whitespace-nowrap">
+<span class="text-primary-fixed font-bold text-lg">¥</span>
+<span class="text-primary-fixed font-headline font-extrabold text-4xl tracking-tighter">299</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3 whitespace-nowrap">
+<span class="text-on-surface font-semibold text-sm">1200+ 已订</span>
+<span class="text-on-surface font-semibold text-sm">99% 好评</span>
+</div>
+<div class="whitespace-nowrap">
+<span class="text-on-surface-variant text-base line-through">¥399</span>
+</div>
+</div>
+</div>
+<!-- Title and Subtitle -->
+<h1 class="font-headline font-extrabold text-2xl text-on-surface leading-tight mb-2 whitespace-nowrap">深度全屋保洁 · 焕然一新套餐</h1>
+<p class="text-on-surface-variant text-base leading-relaxed mb-6">含客厅、卧室、厨房、卫生间及阳台的基础除尘与高温杀菌，赠送玻璃内侧擦拭。</p>
+<!-- Service Tags -->
+<div class="flex flex-wrap gap-3 pt-4 border-t border-surface-container-low">
+<div class="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 dark:bg-orange-900/10 rounded-full whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed" data-icon="verified_user">verified_user</span>
+<span class="text-primary-fixed font-medium text-xs">无忧退</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 dark:bg-orange-900/10 rounded-full whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed" data-icon="bolt">bolt</span>
+<span class="text-primary-fixed font-medium text-xs">极速上门</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 dark:bg-orange-900/10 rounded-full whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed" data-icon="new_releases">new_releases</span>
+<span class="text-primary-fixed font-medium text-xs">官方认证</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Selection Section -->
+<div class="px-5 mt-4 space-y-3">
+<!-- Specification Selector -->
+<button class="w-full flex items-center justify-between bg-surface-container-lowest p-5 rounded-xl active:scale-[0.98] transition-all">
+<div class="flex items-center gap-4 whitespace-nowrap">
+<span class="text-on-surface-variant font-medium text-base w-12 text-left">规格</span>
+<span class="text-on-surface font-semibold text-base">选择：时长/面积/服务内容</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Address Selector -->
+<button class="w-full flex items-center justify-between bg-surface-container-lowest p-5 rounded-xl active:scale-[0.98] transition-all">
+<div class="flex items-center gap-4 whitespace-nowrap">
+<span class="text-on-surface-variant font-medium text-base w-12 text-left">送至</span>
+<div class="flex flex-col items-start">
+<span class="text-on-surface font-semibold text-base">北京市 朝阳区 幸福大街...</span>
+<span class="text-primary-fixed text-xs font-bold">今天 14:00 前下单，预计明日上门</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<!-- Detail Content (Bento Style) -->
+<div class="px-5 mt-8">
+<h3 class="font-headline font-bold text-xl mb-6 whitespace-nowrap">服务亮点</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2 bg-surface-container-lowest p-6 rounded-xl overflow-hidden relative min-h-[160px] flex flex-col justify-end">
+<img alt="Steam cleaning tool" class="absolute inset-0 w-full h-full object-cover opacity-80" data-alt="Close-up of a high-tech steam cleaner head releasing mist on a clean floor, artistic focus, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7NNFYDBIo-_WEUr6Kpu_wgJG7P1iDEwgCPonRluZ6kXSitSkHqnxTzZnovHg0lWaJAb30XfjmqG3UG81-D5qPfLTISb4b_PBhnLNwnSiTZZ3IKHyN7eu7VCipEVBEAoukdjDakscOab5cBoI2dn7kGqfQxGmfhhRu54mlxCx51eJ5xb4br4OCvn-kV16q1Wna0tMAW4f--sTszIozNyRRgqdyPg0BcKsw_psNMvi_AarYBCIFA_opxIZ_GnzMo38DxjRBmQpEtw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="relative z-10">
+<h4 class="text-white font-bold text-lg whitespace-nowrap">高温蒸汽消杀</h4>
+<p class="text-white/80 text-sm whitespace-nowrap">140℃高温除菌，杀灭99.9%家庭细菌</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col gap-3">
+<div class="w-12 h-12 bg-primary-fixed/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="workspace_premium">workspace_premium</span>
+</div>
+<div>
+<h4 class="font-bold text-sm whitespace-nowrap">标准工具组</h4>
+<p class="text-on-surface-variant text-xs leading-tight mt-1 whitespace-nowrap">分区分色抹布，拒绝交叉污染</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col gap-3">
+<div class="w-12 h-12 bg-primary-fixed/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="person_check">person_check</span>
+</div>
+<div>
+<h4 class="font-bold text-sm whitespace-nowrap">实名认证师傅</h4>
+<p class="text-on-surface-variant text-xs leading-tight mt-1 whitespace-nowrap">5年+经验，100%持证上岗</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Extra Breathing Space -->
+<div class="h-12"></div>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="fixed bottom-0 w-full z-50 bg-white/90 dark:bg-stone-950/90 backdrop-blur-xl rounded-t-xl pb-safe">
+<div class="flex justify-between items-center h-20 px-5 w-full max-w-screen-xl mx-auto gap-4">
+<!-- Functional Icons -->
+<div class="flex items-center gap-4">
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 duration-150 whitespace-nowrap">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+<span class="text-xs mt-0.5">收藏</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 duration-150 whitespace-nowrap">
+<span class="material-symbols-outlined text-xl" data-icon="support_agent">support_agent</span>
+<span class="text-xs mt-0.5">客服</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 duration-150 relative whitespace-nowrap">
+<span class="material-symbols-outlined text-xl" data-icon="shopping_cart">shopping_cart</span>
+<span class="text-xs mt-0.5">购物车</span>
+<span class="absolute top-0 -right-1 bg-primary-fixed text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">2</span>
+</button>
+</div>
+<!-- Main CTA Buttons -->
+<div class="flex-1 flex gap-2">
+<button class="flex-1 h-12 rounded-full font-bold text-sm text-primary-fixed bg-orange-50 border border-primary-fixed/20 active:scale-95 duration-150 whitespace-nowrap">
+                    加入购物车
+                </button>
+<button class="flex-1 h-12 rounded-full font-bold text-sm text-white bg-gradient-to-r from-primary-fixed to-primary-dim shadow-[0_12px_32px_rgba(255,133,27,0.2)] active:scale-95 duration-150 whitespace-nowrap">
+                    立即购买
+                </button>
+</div>
+</div>
+</footer>
+</body></html>

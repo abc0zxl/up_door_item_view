@@ -50,6 +50,12 @@
 			"style": {
 				"navigationBarTitleText": "商品列表页面"
 			}
+		},
+		{
+			"path": "pages/goodsDetail/Detail",
+			"style": {
+				"navigationBarTitleText": "商品详情"
+			}
 		}
 	],
 	"globalStyle": {

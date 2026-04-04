@@ -65,6 +65,9 @@ const goToDetail = (id) => {
 
 const onBook = (id) => {
   console.log('预约服务', id)
+  uni.navigateTo({
+    url: '/pages/goodsDetail/Detail'
+  })
 }
 
 
