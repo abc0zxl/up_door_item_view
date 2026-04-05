@@ -47,10 +47,11 @@ const handleBack = () => {
 
 // 修改地址
 const handleModifyAddress = () => {
-  uni.showToast({
-    title: '地址修改功能开发中',
-    icon: 'none'
-  })
+//   uni.showToast({
+//     title: '地址修改功能开发中',
+//     icon: 'none'
+//   })
+  uni.navigateTo({ url: '/pagesMember/address/address' })
 }
 
 // 联系商家

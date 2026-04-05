@@ -14,7 +14,7 @@ const orderStatuses = ref([
 // 方法
 const handleAddressManage = () => {
   console.log('跳转地址管理')
-  // uni.navigateTo({ url: '/pages/address/address' })
+  uni.navigateTo({ url: '/pagesMember/address/address' })
 }
 
 const handleSettings = () => {
