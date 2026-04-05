@@ -1,3 +1,240 @@
+
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+
+
+
+
+// 响应式数据
+const skuKey = ref(false)        // 是否打开SKU弹窗
+const skuMode = ref(1)           // SKU弹窗模式
+const goodsInfo = ref({})         // 商品信息
+
+// 页面加载
+onMounted((options) => {
+  init(options)
+})
+
+// 初始化
+const init = (options = {}) => {
+  // 你原来的逻辑
+}
+
+// 打开SKU弹窗 + 设置商品数据
+const openSkuPopup = () => {
+  // 模拟接口返回的商品信息
+  goodsInfo.value = {
+    "_id": "001",
+    "name": "iphone11",
+    "goods_thumb": "https://img14.360buyimg.com/n0/jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg",
+    "sku_list": [
+      {
+        "_id": "001",
+        "goods_id": "001",
+        "goods_name": "iphone11",
+        "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
+        "price": 19800,
+        "sku_name_arr": ["红色", "128G", "公开版"],
+        "stock": 1000
+      },
+      {
+        "_id": "002",
+        "goods_id": "001",
+        "goods_name": "iphone11",
+        "image": "https://img14.360buyimg.com/n0/jfs/t1/52252/35/10516/124064/5d7808e0E46202391/7100f3733a1c1f00.jpg",
+        "price": 9800,
+        "sku_name_arr": ["白色", "256G", "公开版"],
+        "stock": 100
+      },
+      {
+        "_id": "003",
+        "goods_id": "001",
+        "goods_name": "iphone11",
+        "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
+        "price": 19800,
+        "sku_name_arr": ["红色", "256G", "公开版"],
+        "stock": 1
+      }
+    ],
+    "spec_list": [
+      {
+        "name": "颜色",
+        "list": [
+          { "name": "红色" },
+          { "name": "黑色" },
+          { "name": "白色" }
+        ]
+      },
+      {
+        "name": "内存",
+        "list": [
+          { "name": "128G" },
+          { "name": "256G" }
+        ],
+      },
+      {
+        "name": "版本",
+        "list": [
+          { "name": "公开版" },
+          { "name": "非公开版" }
+        ]
+      }
+    ]
+  }
+  skuKey.value = true
+  console.log("已打开sku")
+}
+
+// SKU 事件监听
+const onOpenSkuPopup = () => {
+  console.log("监听 - 打开sku组件")
+}
+const onCloseSkuPopup = () => {
+  console.log("监听 - 关闭sku组件")
+}
+
+// 加入购物车前的判断
+const addCartFn = (obj) => {
+  const { selectShop } = obj
+  let res = {}
+  let name = selectShop.goods_name
+  
+  if (selectShop.sku_name !== "默认") {
+    name += "-" + selectShop.sku_name_arr.join(',')
+  }
+  
+  res.msg = `${name} 已添加到购物车`
+  if (typeof obj.success === "function") obj.success(res)
+}
+
+// 加入购物车
+const addCart = (selectShop) => {
+  console.log("监听 - 加入购物车")
+  addCartFn({
+    selectShop: selectShop,
+    success: (res) => {
+      toast(res.msg)
+      setTimeout(() => {
+        skuKey.value = false
+      }, 300)
+    }
+  })
+}
+
+// 立即购买
+// const buyNow = (selectShop) => {
+//   console.log("监听 - 立即购买")
+//   addCartFn({
+//     selectShop: selectShop,
+//     success: () => {
+//       toast("立即购买")
+//     }
+//   })
+// }
+
+// 提示框
+const toast = (msg) => {
+  uni.showToast({
+    title: msg,
+    icon: "none"
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 轮播图数据
+const bannerImages = ref([
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCT0EwILZl3qTm_OUu2XHfj1MZqqxacQ-HevcxhJLG2ZX7NBS4nqgQQcJgYvNTXgjqJjEYzJUqRO2SEMXnRTtJxvqaFuaC6l7OHDIte3qUnYbUIuxzMbHBEOl5TZfwvf_xCkhkYz0MnFlcg7I6dfh0fDVEV3OdyjS28MM_Cvv4JnDwSLRSCGd05B-y9HMpoVLBx-6Mpoge9xJaWURIDESiotwfwpqKbU_RXsjF7SJs91fr0Qogdn82YNBJvTepwBkAYvYWw5cADqw'
+])
+const currentBannerIndex = ref(0)
+
+// 服务数据
+const serviceData = reactive({
+  price: '299',
+  originalPrice: '399',
+  orders: '1200',
+  rating: '99',
+  title: '深度全屋保洁 · 焕然一新套餐',
+  description: '含客厅、卧室、厨房、卫生间及阳台的基础除尘与高温杀菌，赠送玻璃内侧擦拭。',
+  tags: [
+    { name: '无忧退', icon: '✅' },
+    { name: '极速上门', icon: '⚡' },
+    { name: '官方认证', icon: '🏅' }
+  ]
+})
+
+// 地址数据
+const address = reactive({
+  address: '北京市 朝阳区 幸福大街...',
+  tip: '今天 14:00 前下单，预计明日上门'
+})
+
+// 亮点数据
+const heroImage = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuC7NNFYDBIo-_WEUr6Kpu_wgJG7P1iDEwgCPonRluZ6kXSitSkHqnxTzZnovHg0lWaJAb30XfjmqG3UG81-D5qPfLTISb4b_PBhnLNwnSiTZZ3IKHyN7eu7VCipEVBEAoukdjDakscOab5cBoI2dn7kGqfQxGmfhhRu54mlxCx51eJ5xb4br4OCvn-kV16q1Wna0tMAW4f--sTszIozNyRRgqdyPg0BcKsw_psNMvi_AarYBCIFA_opxIZ_GnzMo38DxjRBmQpEtw')
+const features = ref([
+  { icon: '🛠️', title: '标准工具组', desc: '分区分色抹布，拒绝交叉污染' },
+  { icon: '👤', title: '实名认证师傅', desc: '5年+经验，100%持证上岗' }
+])
+
+// 底部状态
+const isFavorited = ref(false)
+const cartCount = ref(2)
+
+// 交互方法
+const goBack = () => {
+  uni.navigateBack()
+}
+const onShare = () => {
+  uni.showToast({ title: '分享功能', icon: 'none' })
+}
+const selectSpec = () => {
+  uni.showToast({ title: '选择规格', icon: 'none' })
+}
+const selectAddress = () => {
+  uni.showToast({ title: '选择地址', icon: 'none' })
+}
+const toggleFavorite = () => {
+  isFavorited.value = !isFavorited.value
+  uni.showToast({ title: isFavorited.value ? '已收藏' : '已取消收藏', icon: 'none' })
+}
+const contactService = () => {
+  uni.showToast({ title: '联系客服', icon: 'none' })
+}
+const goToCart = () => {
+  uni.showToast({ title: '打开购物车', icon: 'none' })
+}
+const addToCart = () => {
+  cartCount.value++
+  uni.showToast({ title: '已加入购物车', icon: 'success' })
+}
+// const buyNow = () => {
+//   uni.showToast({ title: '立即购买', icon: 'none' })
+// }
+</script>
+
 <template>
   <view class="service-detail-page">
     <!-- 顶部导航栏 -->
@@ -18,6 +255,21 @@
       <view class="navbar-divider"></view>
     </view> -->
 
+
+
+<!-- 商品种类选择 -->
+        <vk-data-goods-sku-popup
+            ref="skuPopup"
+            v-model="skuKey"
+            border-radius="20"
+            :z-index="990"
+            :localdata="goodsInfo"
+            :mode="skuMode"
+            @open="onOpenSkuPopup"
+            @close="onCloseSkuPopup"
+            @add-cart="addCart"
+            @buy-now="buyNow"
+        ></vk-data-goods-sku-popup>
     <main class="main-content">
       <!-- 轮播图区域 -->
       <view class="hero-banner">
@@ -118,84 +370,12 @@
       </view>
       <view class="cta-buttons">
         <button class="cta-btn add-cart" @click="addToCart">加入购物车</button>
-        <button class="cta-btn buy-now" @click="buyNow">立即购买</button>
+        <button class="cta-btn buy-now" @click="openSkuPopup()">立即购买</button>
       </view>
     </view>
   </view>
 </template>
 
-<script setup>
-import { ref, reactive } from 'vue'
-
-// 轮播图数据
-const bannerImages = ref([
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCT0EwILZl3qTm_OUu2XHfj1MZqqxacQ-HevcxhJLG2ZX7NBS4nqgQQcJgYvNTXgjqJjEYzJUqRO2SEMXnRTtJxvqaFuaC6l7OHDIte3qUnYbUIuxzMbHBEOl5TZfwvf_xCkhkYz0MnFlcg7I6dfh0fDVEV3OdyjS28MM_Cvv4JnDwSLRSCGd05B-y9HMpoVLBx-6Mpoge9xJaWURIDESiotwfwpqKbU_RXsjF7SJs91fr0Qogdn82YNBJvTepwBkAYvYWw5cADqw'
-])
-const currentBannerIndex = ref(0)
-
-// 服务数据
-const serviceData = reactive({
-  price: '299',
-  originalPrice: '399',
-  orders: '1200',
-  rating: '99',
-  title: '深度全屋保洁 · 焕然一新套餐',
-  description: '含客厅、卧室、厨房、卫生间及阳台的基础除尘与高温杀菌，赠送玻璃内侧擦拭。',
-  tags: [
-    { name: '无忧退', icon: '✅' },
-    { name: '极速上门', icon: '⚡' },
-    { name: '官方认证', icon: '🏅' }
-  ]
-})
-
-// 地址数据
-const address = reactive({
-  address: '北京市 朝阳区 幸福大街...',
-  tip: '今天 14:00 前下单，预计明日上门'
-})
-
-// 亮点数据
-const heroImage = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuC7NNFYDBIo-_WEUr6Kpu_wgJG7P1iDEwgCPonRluZ6kXSitSkHqnxTzZnovHg0lWaJAb30XfjmqG3UG81-D5qPfLTISb4b_PBhnLNwnSiTZZ3IKHyN7eu7VCipEVBEAoukdjDakscOab5cBoI2dn7kGqfQxGmfhhRu54mlxCx51eJ5xb4br4OCvn-kV16q1Wna0tMAW4f--sTszIozNyRRgqdyPg0BcKsw_psNMvi_AarYBCIFA_opxIZ_GnzMo38DxjRBmQpEtw')
-const features = ref([
-  { icon: '🛠️', title: '标准工具组', desc: '分区分色抹布，拒绝交叉污染' },
-  { icon: '👤', title: '实名认证师傅', desc: '5年+经验，100%持证上岗' }
-])
-
-// 底部状态
-const isFavorited = ref(false)
-const cartCount = ref(2)
-
-// 交互方法
-const goBack = () => {
-  uni.navigateBack()
-}
-const onShare = () => {
-  uni.showToast({ title: '分享功能', icon: 'none' })
-}
-const selectSpec = () => {
-  uni.showToast({ title: '选择规格', icon: 'none' })
-}
-const selectAddress = () => {
-  uni.showToast({ title: '选择地址', icon: 'none' })
-}
-const toggleFavorite = () => {
-  isFavorited.value = !isFavorited.value
-  uni.showToast({ title: isFavorited.value ? '已收藏' : '已取消收藏', icon: 'none' })
-}
-const contactService = () => {
-  uni.showToast({ title: '联系客服', icon: 'none' })
-}
-const goToCart = () => {
-  uni.showToast({ title: '打开购物车', icon: 'none' })
-}
-const addToCart = () => {
-  cartCount.value++
-  uni.showToast({ title: '已加入购物车', icon: 'success' })
-}
-const buyNow = () => {
-  uni.showToast({ title: '立即购买', icon: 'none' })
-}
-</script>
 
 <style lang="scss" scoped>
 /* 颜色变量（与原设计系统一致） */

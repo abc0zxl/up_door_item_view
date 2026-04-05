@@ -3,6 +3,9 @@
 import IndexNavber from '@/components/indexNavber.vue';
 import { ref } from 'vue'
 
+
+
+
 // 搜索关键词
 const keyword = ref('')
 // 当前选中的筛选类型
@@ -74,7 +77,15 @@ const onBook = (id) => {
 </script>
 <template>
 
+
+
+
+
+
+
   <view class="service-list-page">
+
+
     <!-- <IndexNavber/> -->
     <main class="main-content">
       <!-- 搜索栏 -->
