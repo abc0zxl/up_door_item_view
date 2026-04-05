@@ -764,7 +764,16 @@ export default {
           emit('buy', selectShopData);
         }
       });
+	  console.log("通过了checkSelectComplete函数")
+	  uni.navigateTo({ url: '/pages/pageOrder/orderConfirm/orderConfirm' })
     };
+	// const buyNow = () => {
+	// 	checkSelectComplete({
+	// 	    uni.navigateTo({
+	// 	        url: '/pages/orderConfirm/orderConfirm'
+	// 	    })
+	// 	})
+	// }
     
     const toast = (title, icon) => {
       uni.showToast({

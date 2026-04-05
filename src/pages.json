@@ -108,7 +108,13 @@
 			{
 				"path": "orderDetail/orderDetail",
 				"style": {
-					"navigationBarTitleText": "订单详情页面"
+					"navigationBarTitleText": "订单详情"
+				}
+			},
+			{
+				"path": "orderConfirm/orderConfirm",
+				"style": {
+					"navigationBarTitleText": "订单确认"
 				}
 			}
 		]
