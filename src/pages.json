@@ -94,5 +94,18 @@
 				"selectedIconPath": "static/tabs/my1.png"
 			}
 		]
+	},
+	"subPackages": [
+	{
+		"root": "pages/pageOrder",
+		"pages": [
+			{
+				"path": "orderList/orderList",
+				"style": {
+					"navigationBarTitleText": "订单列表"
+				}
+			}
+		]
 	}
+]
 }

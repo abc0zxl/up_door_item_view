@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>订单确认 - 上门帮</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, .brand-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#745700",
+              "on-primary-fixed": "#0f0400",
+              "secondary": "#0058bb",
+              "on-secondary-fixed": "#003270",
+              "primary-container": "#ff851b",
+              "on-error-container": "#520c00",
+              "outline": "#767776",
+              "secondary-container": "#bed2ff",
+              "on-primary": "#fff0e8",
+              "error-container": "#f95630",
+              "tertiary-fixed": "#f5bf26",
+              "primary-fixed-dim": "#ee7805",
+              "surface-container-low": "#f1f1f0",
+              "on-tertiary-container": "#523d00",
+              "outline-variant": "#adadac",
+              "on-error": "#ffefec",
+              "on-surface-variant": "#5b5c5b",
+              "inverse-surface": "#0d0e0e",
+              "error": "#b02500",
+              "surface-dim": "#d4d4d4",
+              "surface-container": "#e8e8e7",
+              "surface-variant": "#dcdddc",
+              "primary": "#924700",
+              "on-background": "#2e2f2f",
+              "secondary-dim": "#004ca4",
+              "tertiary-container": "#f5bf26",
+              "inverse-primary": "#ff851b",
+              "primary-fixed": "#ff851b",
+              "on-secondary-fixed-variant": "#004da6",
+              "primary-dim": "#803d00",
+              "surface": "#f7f6f5",
+              "inverse-on-surface": "#9d9d9c",
+              "secondary-fixed-dim": "#a9c4ff",
+              "surface-bright": "#f7f6f5",
+              "on-primary-container": "#431d00",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-container": "#004495",
+              "on-surface": "#2e2f2f",
+              "tertiary-fixed-dim": "#e6b112",
+              "background": "#f7f6f5",
+              "error-dim": "#b92902",
+              "surface-tint": "#924700",
+              "on-secondary": "#f0f2ff",
+              "secondary-fixed": "#bed2ff",
+              "on-primary-fixed-variant": "#512400",
+              "on-tertiary-fixed": "#392a00",
+              "surface-container-highest": "#dcdddc",
+              "surface-container-high": "#e2e2e1",
+              "tertiary-dim": "#654c00",
+              "on-tertiary": "#fff1d9",
+              "on-tertiary-fixed-variant": "#5d4600"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar from JSON Logic -->
+<header class="fixed top-0 w-full z-50 bg-[#F7F6F5]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-screen-xl mx-auto">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 active:scale-95 transition-all text-[#924700]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-xl tracking-tight text-[#924700]">确认订单</h1>
+<div class="w-10 h-10 flex items-center justify-center">
+<!-- Placeholder for balance/alignment -->
+</div>
+</div>
+<div class="bg-[#F1F1F0] h-[1px] w-full absolute bottom-0"></div>
+</header>
+<main class="pt-24 px-4 space-y-4 max-w-md mx-auto">
+<!-- Block 1: Address Information -->
+<section class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-bold text-lg">张先生</span>
+<span class="text-on-surface-variant text-sm">138 **** 8888</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">上海市静安区南京西路1266号<br/>恒隆广场写字楼1期 2503室</p>
+</div>
+<button class="text-primary font-semibold text-sm flex items-center gap-1 active:scale-95 transition-transform">
+<span>修改地址</span>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</section>
+<!-- Block 2: Merchant Information -->
+<section class="bg-[#FDF9F4] rounded-lg p-6 flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed/20">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional domestic service company manager in a clean uniform with a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA"/>
+</div>
+<div class="flex-1">
+<h2 class="font-bold text-base">悦享家政上海旗舰店</h2>
+<p class="text-on-surface-variant text-xs mt-0.5">上海市黄浦区中山东一路18号</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary-fixed/10 text-primary flex items-center justify-center active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</section>
+<!-- Block 3: Service Information -->
+<section class="bg-surface-container-lowest rounded-lg p-6 space-y-5">
+<div class="flex gap-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="professional cleaning equipment including a modern vacuum and organic cleaning supplies on a pristine hardwood floor in a sunlit living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-base leading-tight">全屋深度保洁 4小时</h3>
+<p class="text-on-surface-variant text-sm mt-1">专业深度除尘除菌</p>
+</div>
+</div>
+<div class="space-y-3 pt-2">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">服务类别</span>
+<span class="font-medium text-on-surface">家庭保洁 / 深度保洁</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">服务时间</span>
+<span class="font-medium text-on-surface">2024年05月20日 14:00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">订单编号</span>
+<span class="font-medium text-on-surface">SH202405208892</span>
+</div>
+</div>
+<div class="pt-4 flex justify-between items-baseline border-t border-surface-container/50">
+<span class="text-on-surface-variant text-sm">订单总计</span>
+<div class="text-[#FF851B] font-extrabold text-3xl">
+<span class="text-lg font-bold">¥</span>299
+                </div>
+</div>
+</section>
+<!-- Block 4: User Information -->
+<section class="bg-surface-container-lowest rounded-lg p-6 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2">
+<span class="font-bold">预订人姓名</span>
+<span class="text-xs px-2 py-0.5 bg-primary-fixed/10 text-primary rounded-full font-medium">本人</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-0.5">138 **** 8888</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</section>
+</main>
+<!-- Block 5: Sticky Footer with Confirm Button -->
+<footer class="fixed bottom-0 left-0 w-full bg-[#FFFFFF]/90 backdrop-blur-2xl p-6 pt-4 pb-10 z-50">
+<div class="max-w-md mx-auto">
+<button class="w-full h-16 bg-gradient-to-r from-primary-fixed to-primary-dim text-on-primary font-bold text-lg rounded-xl shadow-[0_12px_32px_0_rgba(255,133,27,0.25)] flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                确认信息，去支付
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+</body></html>

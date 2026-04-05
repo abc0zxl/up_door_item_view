@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>我的订单 - 上门帮</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#745700",
+              "on-primary-fixed": "#0f0400",
+              "secondary": "#0058bb",
+              "on-secondary-fixed": "#003270",
+              "primary-container": "#ff851b",
+              "on-error-container": "#520c00",
+              "outline": "#767776",
+              "secondary-container": "#bed2ff",
+              "on-primary": "#fff0e8",
+              "error-container": "#f95630",
+              "tertiary-fixed": "#f5bf26",
+              "primary-fixed-dim": "#ee7805",
+              "surface-container-low": "#f1f1f0",
+              "on-tertiary-container": "#523d00",
+              "outline-variant": "#adadac",
+              "on-error": "#ffefec",
+              "on-surface-variant": "#5b5c5b",
+              "inverse-surface": "#0d0e0e",
+              "error": "#b02500",
+              "surface-dim": "#d4d4d4",
+              "surface-container": "#e8e8e7",
+              "surface-variant": "#dcdddc",
+              "primary": "#924700",
+              "on-background": "#2e2f2f",
+              "secondary-dim": "#004ca4",
+              "tertiary-container": "#f5bf26",
+              "inverse-primary": "#ff851b",
+              "primary-fixed": "#ff851b",
+              "on-secondary-fixed-variant": "#004da6",
+              "primary-dim": "#803d00",
+              "surface": "#f7f6f5",
+              "inverse-on-surface": "#9d9d9c",
+              "secondary-fixed-dim": "#a9c4ff",
+              "surface-bright": "#f7f6f5",
+              "on-primary-container": "#431d00",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-container": "#004495",
+              "on-surface": "#2e2f2f",
+              "tertiary-fixed-dim": "#e6b112",
+              "background": "#f7f6f5",
+              "error-dim": "#b92902",
+              "surface-tint": "#924700",
+              "on-secondary": "#f0f2ff",
+              "secondary-fixed": "#bed2ff",
+              "on-primary-fixed-variant": "#512400",
+              "on-tertiary-fixed": "#392a00",
+              "surface-container-highest": "#dcdddc",
+              "surface-container-high": "#e2e2e1",
+              "tertiary-dim": "#654c00",
+              "on-tertiary": "#fff1d9",
+              "on-tertiary-fixed-variant": "#5d4600"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        background-color: #F7F6F5;
+        color: #2E2F2F;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#F7F6F5]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-screen-xl mx-auto relative">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#924700] active:scale-95 transition-transform cursor-pointer">menu</span>
+</div>
+<h1 class="font-headline font-bold text-xl tracking-tight text-[#924700]">我的订单</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden active:scale-95 transition-transform cursor-pointer">
+<img alt="User Profile" data-alt="close up profile avatar of a smiling young person with warm lighting and minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4gt0PByV10gD2Zym-UeTbJbsDxdEeiWGgnSsuvM0ksylYVzAYOLTFOlYPPd4nHzu1zO2x9iqSxXXouK5qPKoaNjEsBz1RjaeIlPuvb34tnzBj3nDVqvtRuhLJ_o0_LV6v1Gkr6tciG27Ul8W-2PBLICQvVADqswbpcw0NIFipuPeYKlk7EkrhGaT8mIMfb4l3Dy9ky0J5tGuQ_xOWzJ2thuhGu8HAWFnHHInQJG-BF451Ri_6MDJcQxDnh2WTcTuAQtSiVuR2_w"/>
+</div>
+<div class="bg-[#F1F1F0] h-[1px] w-full absolute bottom-0 left-0"></div>
+</div>
+</nav>
+<main class="pt-20 pb-32 px-4 max-w-screen-md mx-auto">
+<!-- Tab Navigation -->
+<section class="mb-8 sticky top-16 bg-[#F7F6F5] py-4 z-40">
+<div class="flex overflow-x-auto no-scrollbar gap-2 px-1">
+<button class="flex-none px-6 py-2.5 rounded-full bg-primary-fixed text-on-primary font-semibold text-sm transition-all shadow-[0_8px_16px_-4px_rgba(255,133,27,0.25)]">全部</button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors text-base text-on-surface">待付款</button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors text-base text-on-surface">待服务</button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors text-base text-on-surface">已完成</button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors text-base text-on-surface">退款/售后</button>
+</div>
+</section>
+<!-- Order List -->
+<div class="space-y-6">
+<!-- Order Card 1: Pending Payment -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-4">
+<span class="text-label-md text-on-surface-variant font-medium text-base text-on-surface">订单编号: 82749201934</span>
+<span class="text-sm font-bold text-primary-fixed">待付款</span>
+</div>
+<div class="flex gap-4 mb-6">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Deep Cleaning Service" class="w-full h-full object-cover" data-alt="close up of a professional cleaning person wearing yellow gloves using a spray bottle on a white surface in a bright room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJRCBsLkRkckGh0YyTG23MOpxmlpW93Yvtb9J6NV3ZXzAHHXyYMlmScOQpYAsFpD50ltl4LmOBeh3jSDhf661Axz4LWNXeW8bwMVr5iI3tOsX_2Sq4GnKuWmsGhc7suvcYILsZiS8L10hU3UG6BTZHnCT8McqGBhQfCO6lqq8RgzQvtdvmMl2f7H8L7OQ3-izDTpaR4oz48gJD2mPUiLapsD6VMdQC-euX7Jr-lAFyizBZuKzMgYcv5WADz1aeyWqlmtMmWgx9KA"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-lg text-on-background mb-1">专业深度保洁 - 3小时</h3>
+<p class="text-sm text-on-surface-variant line-clamp-1 text-base text-on-surface">包含厨房去油、卫浴除霉、全屋除尘</p>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="text-xs font-bold text-on-background">¥</span>
+<span class="text-xl font-extrabold text-on-background tracking-tighter">299.00</span>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-4 border-t border-surface-container/50">
+<button class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant bg-surface-container-low active:scale-95 transition-transform">取消订单</button>
+<button class="px-7 py-2 rounded-full text-sm font-bold text-on-primary bg-gradient-to-r from-[#FF851B] to-[#924700] shadow-[0_12px_32px_0_rgba(255,133,27,0.15)] active:scale-95 transition-transform">去付款</button>
+</div>
+</div>
+<!-- Order Card 2: Pending Service -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-4">
+<span class="text-label-md text-on-surface-variant font-medium text-base text-on-surface">订单编号: 82749201882</span>
+<span class="text-sm font-bold text-secondary">待服务</span>
+</div>
+<div class="flex gap-4 mb-6">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="AC Maintenance" class="w-full h-full object-cover" data-alt="technician in blue uniform repairing an air conditioning unit on a white wall with focus on hands and tools" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbuNXz67uijj--aXdnBeE88Ia18lnUbLcKVVCdMOZtqzIKjRlj6GMSeqdJbJNe_oNJjvYNH0MonVbXaJk17AVt_C7VHrDFZlk15EgtytkGh_Y3hIWkpmb5Qu6iDgE60LvKSsG0YoDK-g1ZrNYMz4mIVI_fp3GGVUeK69RUiGSy8IYN0RBnYre9uHzU9JcTmP3wgTsIBvWoaCsovS-MoRLXKZe5NgnCgDTH5bTmHJGoKI5al9hYvHnxqCgsUoLwJ36-h0LAddO_Gw"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-lg text-on-background mb-1">空调清洗维护 (挂机)</h3>
+<p class="text-sm text-on-surface-variant line-clamp-1 text-base text-on-surface">预约时间：2023-11-20 14:00</p>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="text-xs font-bold text-on-background">¥</span>
+<span class="text-xl font-extrabold text-on-background tracking-tighter">158.00</span>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-4 border-t border-surface-container/50">
+<button class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant bg-surface-container-low active:scale-95 transition-transform">修改时间</button>
+<button class="px-5 py-2 rounded-full text-sm font-bold text-primary-fixed bg-primary-fixed/10 active:scale-95 transition-transform flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">support_agent</span>
+                        联系师傅
+                    </button>
+</div>
+</div>
+<!-- Order Card 3: Completed -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-4">
+<span class="text-label-md text-on-surface-variant font-medium text-base text-on-surface">订单编号: 82749199521</span>
+<span class="text-sm font-bold text-on-surface-variant/60 text-base text-on-surface/80">已完成</span>
+</div>
+<div class="flex gap-4 mb-6 opacity-80">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Pipeline Repair" class="w-full h-full object-cover" data-alt="close up of a chrome kitchen faucet and metal pipes being adjusted by a wrench with water droplets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-lg text-on-background mb-1">厨房疏通服务</h3>
+<p class="text-sm text-on-surface-variant line-clamp-1 text-base text-on-surface">服务师傅：李师傅 (已实名认证)</p>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="text-xs font-bold text-on-background">¥</span>
+<span class="text-xl font-extrabold text-on-background tracking-tighter">88.00</span>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-4 border-t border-surface-container/50">
+<button class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant bg-surface-container-low active:scale-95 transition-transform">申请售后</button>
+<button class="px-5 py-2 rounded-full text-sm font-bold text-primary-fixed border border-primary-fixed/20 active:scale-95 transition-transform">再次购买</button>
+<button class="px-5 py-2 rounded-full text-sm font-bold text-primary-fixed bg-primary-fixed/10 active:scale-95 transition-transform">去评价</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+</body></html>

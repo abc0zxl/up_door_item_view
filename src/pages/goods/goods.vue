@@ -262,9 +262,9 @@ $shadow-color: rgba(255, 133, 27, 0.08);
   border: none;
 }
 
-.search-placeholder {
-//   color: $on-surface-variant;
-}
+// .search-placeholder {
+// //   color: $on-surface-variant;
+// }
 
 /* 筛选栏（横向滚动） */
 .filter-scroll {

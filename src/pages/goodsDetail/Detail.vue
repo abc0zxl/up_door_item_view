@@ -274,7 +274,7 @@ $outline-variant: #adadac;
 
 /* 主内容区 */
 .main-content {
-  padding-top: 64px;
+  // padding-top: 64px;
   padding-bottom: 100px;
 }
 
@@ -588,7 +588,7 @@ $outline-variant: #adadac;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   border-radius: 24px 24px 0 0;
-  padding: 12px 20px;
+  padding: 5px 20px;
   padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   align-items: center;
@@ -618,8 +618,6 @@ $outline-variant: #adadac;
     margin:-10px;
     font-size: 24px;
   }
-  
-
   .label {
     // padding:0px;
     // position:absolute;
@@ -640,8 +638,8 @@ $outline-variant: #adadac;
 
 .cart-badge {
   position: absolute;
-  top: -4px;
-  right: -8px;
+  top: -2px;
+  right: -4px;
   background: $primary;
   color: white;
   font-size: 10px;

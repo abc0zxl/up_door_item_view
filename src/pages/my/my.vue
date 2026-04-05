@@ -26,6 +26,11 @@ const handleLogout = () => {
   console.log('退出登录')
   // 处理退出登录逻辑
 }
+
+const handleAllOrders = () => {
+  console.log('跳转全部订单')
+  uni.navigateTo({ url: '/pages/pageOrder/orderList/orderList'})
+}
 </script>
 
 <template>
@@ -53,7 +58,7 @@ const handleLogout = () => {
       <view class="order-card">
         <view class="order-header">
           <text class="order-title">我的订单</text>
-          <view class="all-orders-btn">
+          <view class="all-orders-btn" @click="handleAllOrders">
             <text class="all-orders-text">全部订单</text>
             <text class="material-symbols-outlined">-》</text>
           </view>
