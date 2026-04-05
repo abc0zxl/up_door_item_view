@@ -191,7 +191,9 @@ const contactService = (order) => {
 }
 
 const viewOrderDetail = (order) => {
-  uni.navigateTo({ url: `/pages/order-detail/order-detail?id=${order.id}` })
+  // uni.navigateTo({ url: `/pages/pageOrder/orderDetail/orderDetail?id=${order.id}` })
+  console.log("触发跳转订单详情")
+  uni.navigateTo({ url: '/pages/pageOrder/orderDetail/orderDetail' })
 }
 
 // 底部导航跳转 (模拟)
