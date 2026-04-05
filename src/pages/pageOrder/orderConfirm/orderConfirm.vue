@@ -1,3 +1,99 @@
+
+<script setup>
+import { ref } from 'vue'
+
+// 地址信息
+const addressInfo = ref({
+  name: '张先生',
+  phoneMask: '138 **** 8888',
+  detail: '上海市静安区南京西路1266号\n恒隆广场写字楼1期 2503室'
+})
+
+// 商家信息
+const merchantInfo = ref({
+  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA',
+  name: '悦享家政上海旗舰店',
+  address: '上海市黄浦区中山东一路18号'
+})
+
+// 服务信息
+const serviceInfo = ref({
+  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ',
+  name: '全屋深度保洁 4小时',
+  description: '专业深度除尘除菌',
+  category: '家庭保洁 / 深度保洁',
+  serviceTime: '2024年05月20日 14:00',
+  orderNo: 'SH202405208892',
+  totalPrice: '299'
+})
+
+// 用户信息
+const userInfo = ref({
+  name: '预订人姓名',
+  phoneMask: '138 **** 8888'
+})
+
+// 返回上一页
+const handleBack = () => {
+  uni.navigateBack({
+    fail: () => {
+      uni.showToast({
+        title: '暂无上一页',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+// 修改地址
+const handleModifyAddress = () => {
+  uni.showToast({
+    title: '地址修改功能开发中',
+    icon: 'none'
+  })
+}
+
+// 联系商家
+const handleCallMerchant = () => {
+  uni.makePhoneCall({
+    phoneNumber: '400-882-8899', // 示例号码，实际可替换为商家电话
+    fail: () => {
+      uni.showToast({
+        title: '拨号失败',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+// 编辑用户信息
+const handleEditUser = () => {
+  uni.showToast({
+    title: '编辑个人信息',
+    icon: 'none'
+  })
+}
+
+// 确认支付
+const handlePay = () => {
+  uni.showModal({
+    title: '确认支付',
+    content: `订单金额：¥${serviceInfo.value.totalPrice}`,
+    confirmText: '去支付',
+    success: (res) => {
+      if (res.confirm) {
+        uni.showToast({
+          title: '支付功能演示',
+          icon: 'none'
+        })
+        // 实际支付逻辑可在此调用支付接口
+        uni.navigateTo({ url: '/pages/pageOrder/orderPay/orderPay' })
+      }
+    }
+  })
+}
+</script>
+
 <template>
   <view class="order-confirm-page">
     <!-- 自定义导航栏 -->
@@ -105,99 +201,6 @@
   </view>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-
-// 地址信息
-const addressInfo = ref({
-  name: '张先生',
-  phoneMask: '138 **** 8888',
-  detail: '上海市静安区南京西路1266号\n恒隆广场写字楼1期 2503室'
-})
-
-// 商家信息
-const merchantInfo = ref({
-  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA',
-  name: '悦享家政上海旗舰店',
-  address: '上海市黄浦区中山东一路18号'
-})
-
-// 服务信息
-const serviceInfo = ref({
-  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ',
-  name: '全屋深度保洁 4小时',
-  description: '专业深度除尘除菌',
-  category: '家庭保洁 / 深度保洁',
-  serviceTime: '2024年05月20日 14:00',
-  orderNo: 'SH202405208892',
-  totalPrice: '299'
-})
-
-// 用户信息
-const userInfo = ref({
-  name: '预订人姓名',
-  phoneMask: '138 **** 8888'
-})
-
-// 返回上一页
-const handleBack = () => {
-  uni.navigateBack({
-    fail: () => {
-      uni.showToast({
-        title: '暂无上一页',
-        icon: 'none'
-      })
-    }
-  })
-}
-
-// 修改地址
-const handleModifyAddress = () => {
-  uni.showToast({
-    title: '地址修改功能开发中',
-    icon: 'none'
-  })
-}
-
-// 联系商家
-const handleCallMerchant = () => {
-  uni.makePhoneCall({
-    phoneNumber: '400-882-8899', // 示例号码，实际可替换为商家电话
-    fail: () => {
-      uni.showToast({
-        title: '拨号失败',
-        icon: 'none'
-      })
-    }
-  })
-}
-
-// 编辑用户信息
-const handleEditUser = () => {
-  uni.showToast({
-    title: '编辑个人信息',
-    icon: 'none'
-  })
-}
-
-// 确认支付
-const handlePay = () => {
-  uni.showModal({
-    title: '确认支付',
-    content: `订单金额：¥${serviceInfo.value.totalPrice}`,
-    confirmText: '去支付',
-    success: (res) => {
-      if (res.confirm) {
-        uni.showToast({
-          title: '支付功能演示',
-          icon: 'none'
-        })
-        // 实际支付逻辑可在此调用支付接口
-      }
-    }
-  })
-}
-</script>
 
 <style scoped>
 /* 页面整体样式 */
