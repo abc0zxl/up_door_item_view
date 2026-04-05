@@ -73,7 +73,7 @@ const handleEditAddress = (item) => {
 // 新增地址
 const handleAddAddress = () => {
   uni.navigateTo({
-    url: '/pages/add-address/add-address',
+    url: '/pagesMember/address_form/address_form',
     fail: () => {
       uni.showToast({
         title: '新增地址页面开发中',

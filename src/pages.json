@@ -128,12 +128,12 @@
 	{
 		"root": "pagesMember",
 		"pages": [
-			// {
-			// 	"path": "address_form/address_form",
-			// 	"style": {
-			// 		"navigationBarTitleText": "新增地址"
-			// 	}
-			// },
+			{
+				"path": "address_form/address_form",
+				"style": {
+					"navigationBarTitleText": "新增地址"
+				}
+			},
 			{
 				"path": "address/address",
 				"style": {
