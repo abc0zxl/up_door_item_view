@@ -19,7 +19,7 @@ const handleAddressManage = () => {
 
 const handleSettings = () => {
   console.log('跳转设置')
-  // uni.navigateTo({ url: '/pages/settings/settings' })
+  uni.navigateTo({ url: '/pagesMember/settings/settings' })
 }
 
 const handleLogout = () => {
@@ -31,6 +31,26 @@ const handleAllOrders = () => {
   console.log('跳转全部订单')
   uni.navigateTo({ url: '/pages/pageOrder/orderList/orderList'})
 }
+
+const handleFavorites = () => {
+  console.log('跳转收藏')
+  uni.navigateTo({ url: '/pagesMember/favorites/favorites' })
+}
+
+const handleHelp = () => {
+  console.log('跳转帮助中心')
+  uni.navigateTo({ url: '/pagesMember/help/help' })
+}
+
+const handleNotification = () => {
+  console.log('跳转通知')
+  uni.navigateTo({ url: '/pagesMember/notifications/notifications' })
+}
+
+const handleEditProfile = () => {
+  console.log('跳转编辑资料')
+  uni.navigateTo({ url: '/pagesMember/profile/editProfile' })
+}
 </script>
 
 <template>
@@ -39,7 +59,7 @@ const handleAllOrders = () => {
     <main class="main-content">
       <!-- 个人资料头部 -->
       <view class="profile-header">
-        <view class="avatar-wrapper">
+        <view class="avatar-wrapper" @click="handleEditProfile">
           <view class="avatar-glow"></view>
           <image 
             class="avatar-image" 
@@ -75,7 +95,7 @@ const handleAllOrders = () => {
 
       <!-- 双功能卡片 -->
       <view class="function-grid">
-        <view class="function-card">
+        <view class="function-card" @click="handleFavorites">
           <view class="function-icon favorite-icon">
             <text class="material-symbols-outlined filled">F</text>
           </view>
@@ -84,7 +104,7 @@ const handleAllOrders = () => {
             <text class="function-subtitle">12个项目</text>
           </view>
         </view>
-        <view class="function-card">
+        <view class="function-card" @click="handleNotification">
           <view class="function-icon notification-icon">
             <text class="material-symbols-outlined filled">N</text>
           </view>
@@ -112,6 +132,15 @@ const handleAllOrders = () => {
               <text class="material-symbols-outlined">S</text>
             </view>
             <text class="menu-text">设置</text>
+          </view>
+          <text class="material-symbols-outlined menu-arrow">-》</text>
+        </button>
+        <button class="menu-button" @click="handleHelp">
+          <view class="menu-left">
+            <view class="menu-icon">
+              <text class="material-symbols-outlined">S</text>
+            </view>
+            <text class="menu-text">帮助中心</text>
           </view>
           <text class="material-symbols-outlined menu-arrow">-》</text>
         </button>

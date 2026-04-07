@@ -3,9 +3,6 @@
 import IndexNavber from '@/components/indexNavber.vue';
 import { ref } from 'vue'
 
-
-
-
 // 搜索关键词
 const keyword = ref('')
 // 当前选中的筛选类型
@@ -68,24 +65,13 @@ const goToDetail = (id) => {
 
 const onBook = (id) => {
   console.log('预约服务', id)
-  uni.navigateTo({
-    url: '/pages/goodsDetail/Detail'
-  })
 }
 
 
 </script>
 <template>
 
-
-
-
-
-
-
   <view class="service-list-page">
-
-
     <!-- <IndexNavber/> -->
     <main class="main-content">
       <!-- 搜索栏 -->
@@ -103,7 +89,7 @@ const onBook = (id) => {
       </view>
 
       <!-- 筛选栏（横向滚动） -->
-      <scroll-view scroll-x class="filter-scroll" show-scrollbar="false">
+      <!-- <scroll-view scroll-x class="filter-scroll" show-scrollbar="false">
         <view class="filter-list">
           <button
             class="filter-btn"
@@ -135,7 +121,7 @@ const onBook = (id) => {
             距离优先
           </button>
         </view>
-      </scroll-view>
+      </scroll-view> -->
 
       <!-- 服务列表 -->
       <view class="service-list">
@@ -273,9 +259,9 @@ $shadow-color: rgba(255, 133, 27, 0.08);
   border: none;
 }
 
-// .search-placeholder {
-// //   color: $on-surface-variant;
-// }
+.search-placeholder {
+//   color: $on-surface-variant;
+}
 
 /* 筛选栏（横向滚动） */
 .filter-scroll {
