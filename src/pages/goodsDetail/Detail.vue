@@ -1,7 +1,18 @@
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref,reactive, onMounted } from 'vue'
+import { getgoodsDetailAPI } from '@/services/goods.js'
 
+
+
+const query = defineProps({
+  id: {
+    type: Number,
+    default: ''
+  }
+})
+
+console.log("接收到的参数是"+query.id)
 
 
 
@@ -9,16 +20,15 @@ import { ref, reactive, onMounted } from 'vue'
 const skuKey = ref(false)        // 是否打开SKU弹窗
 const skuMode = ref(1)           // SKU弹窗模式
 const goodsInfo = ref({})         // 商品信息
+const goodsDetail = ref({})       // 商品详情信息
+const goodsdata = ref({})
 
-// 页面加载
-onMounted((options) => {
-  init(options)
-})
+
 
 // 初始化
-const init = (options = {}) => {
-  // 你原来的逻辑
-}
+// const init = (options = {}) => {
+//   // 你原来的逻辑
+// }
 
 // 打开SKU弹窗 + 设置商品数据
 const openSkuPopup = () => {
@@ -186,6 +196,34 @@ const serviceData = reactive({
   ]
 })
 
+const params = {
+  goodsId: query.id
+}
+
+const getGoodsDetail = async () => {     
+  console.log("传递的参数是"+params.goodsId+",类型是"+typeof params.goodsId)
+  console.log("参数组是"+params)
+  console.log("开始发送商品详情请求...")                                  
+  const gdata = await getgoodsDetailAPI(params)
+  goodsdata.value = gdata.data
+  console.log("商品详情请求成功，返回的数据是", goodsdata.value)
+  // console.log("商品详情请求成功，返回的数据是", goodsdata.data)
+  // if (goodsDetail.code === 200) {
+  //   console.log("获得的商品详情:", goodsdata)
+  //   // goodsDetail.value = res.data.goodsDetail
+  // }
+
+}
+
+
+// 页面加载
+onMounted((options) => {
+  // init(options)
+  getGoodsDetail()
+})
+
+
+
 // 地址数据
 const address = reactive({
   address: '北京市 朝阳区 幸福大街...',
@@ -287,19 +325,19 @@ const addToCart = () => {
         <view class="price-stats">
           <view class="price-box">
             <text class="currency">¥</text>
-            <text class="price">{{ serviceData.price }}</text>
+            <text class="price">{{ goodsdata.price }}</text>
           </view>
           <view class="stats-box">
             <view class="stats-row">
-              <text class="stat">{{ serviceData.orders }}+ 已订</text>
-              <text class="stat">{{ serviceData.rating }}% 好评</text>
+              <text class="stat">{{ goodsdata.salesCount }}+ 已订</text>
+              <text class="stat">{{ goodsdata.rating }}% 好评</text>
             </view>
-            <view class="original-price">¥{{ serviceData.originalPrice }}</view>
+            <view class="original-price">¥{{ goodsdata.oldPrice }}</view>
           </view>
         </view>
 
-        <view class="service-title">{{ serviceData.title }}</view>
-        <view class="service-desc">{{ serviceData.description }}</view>
+        <view class="service-title">{{ goodsdata.serviceName }}</view>
+        <view class="service-desc">{{ goodsdata.description }}</view>
 
         <view class="tag-list">
           <view class="tag" v-for="tag in serviceData.tags" :key="tag.name">

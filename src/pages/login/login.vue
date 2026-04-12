@@ -22,9 +22,9 @@ const memberToken=()=>{
    uni.showToast({title:'登录成功',icon:'success'})
   //设置超时
    setTimeout(()=>{
-    uni.navigateTo({ url: '/pages/index/index' })
+    // uni.navigateTo({ url: '/pages/index/index' })
     //此时跳转的页面不是tobar，所以会报错
-    // uni.switchTab({url:'/pages/index/index'})
+    uni.switchTab({url:'/pages/index/index'})
     // uni.navigateBack()
   },1000)
   console.log(memberStore.profile)

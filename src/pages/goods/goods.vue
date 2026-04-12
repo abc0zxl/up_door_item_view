@@ -1,7 +1,35 @@
 
 <script setup>
 import IndexNavber from '@/components/indexNavber.vue';
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getgoodsListAPI } from '@/services/goods';
+
+const goodsList = ref([])
+
+
+const params = {
+  categoryId: 2,
+  serviceId: 100005,
+  sortBy: 'sales',
+  cityCode: '64',
+  pageNum: 1,
+  pageSize: 3
+}
+
+const getGoodsListData = async () => {
+  try {
+    const res = await getgoodsListAPI(params)
+    console.log("商品数据", res)
+    goodsList.value = res.data.list || []
+    console.log("列表数据是",goodsList.value)
+  } catch (e) {
+    console.error("请求商品数据失败", e)
+  }
+}
+
+onMounted(() => {
+  getGoodsListData()
+})
 
 // 搜索关键词
 const keyword = ref('')
@@ -9,45 +37,47 @@ const keyword = ref('')
 const activeFilter = ref('price')
 
 // 服务列表数据
-const serviceList = ref([
-  {
-    id: 1,
-    name: '深度保洁·全屋除垢',
-    sales: '1.2k+',
-    rating: '99',
-    price: '299',
-    unit: '/4小时起',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCAm9BtrJDJHn_BGlqtfMDzYPbHz5tR1QHo9O888YC1OMWqbOaml-FC2a5b_g6pVJn73xNgyX0pAiHr1ru_2ZHgVmTXQnXDefK2MMJvDoMBg3Hn-26u4J5FluBGNj7ut8_RK7p4ZOOtwR11W4gAi0bbqMFOK1pQJUxXNPxowGclRmXoiJEmmH0_7qr3BXzz6yJwR3NiUKmKpHJzQNK_MY_y-8p3sq0ZkiEVlIFAvY9zsN5uAzTVaRBEm43YodV2xoo6P4eJnCGZtA'
-  },
-  {
-    id: 2,
-    name: '空调加氟清洗·极速达',
-    sales: '800+',
-    rating: '98.5',
-    price: '158',
-    unit: '/次起',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_B51LuSAabxvpvhQltygUPSExLqDcfXEkVKerqpfomNM9XpySuXmz4vSZQgKBdw9gRnDAFsNPXt10YlUeMQFbUeGV9yIXxfjS9hkrT236EPld71aqNVrSI94UOYbh-6SpyyZz6LtXaHyrBE-2IN-_x0mEsyOtkK5fBaAHInRApHSBXD_mcrl0wpPJsY6lC1ic4dPxrb-2ENTCh3BLjPx5SIFlbUqbiDGBB0pUvqfs8zgpus07a_b4iyan2yP5OD2orP6V0H6HPQ'
-  },
-  {
-    id: 3,
-    name: '日式精细搬家·全程免手',
-    sales: '450+',
-    rating: '100',
-    price: '588',
-    unit: '/车起',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAQgez4vFcBbESVgJo-JfybzIXs5jjMYd8xrpBDllvyB0w4saBB_nzDC4iYnAvkrUrTh-q-E7NSYOyedH0fE6fPv7zgHQ2aPeVIzsptQgWrcee02VWSbVFYCoUTL2TkEwBB52jfh0YIfetTvhhX8nkey7TiPT3ot87UzgPih1i1drTE-Q4LeW0sE51V1q3tSND7yCuSzV1L3tKQ8wigfcUtYYR0u6XvZJjFsnj8Edr4JUJ2h_5E69TTpN4t2KqHiBI9yYSGPp-Sw'
-  },
-  {
-    id: 4,
-    name: '全身经络按摩·舒缓疲劳',
-    sales: '2.1k+',
-    rating: '99.2',
-    price: '198',
-    unit: '/60分钟',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHGIVXMQ8Tnzdl1j5MoII59FaRaAv0JJnxxTyqly56fcuHkYu0X8K9QaUOXiChKd05doIoIUX7op0jRtmZjx5y93Pzu2_f_hONXa21JGw3rAtqftoYSRhI_P21TSsB_klx4lkqt5AzUa4xknQUcuyNjZ1ekiQhnB6INMe5ybMornuj4nMdpqoeIK6rIIMy1m0P6YJHTTtpEKfsGO67Togyk-2vuWJOtgbNCKbdpeLkWEa01rshZg8P1mrkNRxKJAy_-0qznVGo9g'
-  }
-])
+// const serviceList = ref([
+//   {
+//     id: 1,
+//     name: '深度保洁·全屋除垢',
+//     sales: '1.2k+',
+//     rating: '99',
+//     price: '299',
+//     unit: '/4小时起',
+//     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCAm9BtrJDJHn_BGlqtfMDzYPbHz5tR1QHo9O888YC1OMWqbOaml-FC2a5b_g6pVJn73xNgyX0pAiHr1ru_2ZHgVmTXQnXDefK2MMJvDoMBg3Hn-26u4J5FluBGNj7ut8_RK7p4ZOOtwR11W4gAi0bbqMFOK1pQJUxXNPxowGclRmXoiJEmmH0_7qr3BXzz6yJwR3NiUKmKpHJzQNK_MY_y-8p3sq0ZkiEVlIFAvY9zsN5uAzTVaRBEm43YodV2xoo6P4eJnCGZtA'
+//   },
+//   {
+//     id: 2,
+//     name: '空调加氟清洗·极速达',
+//     sales: '800+',
+//     rating: '98.5',
+//     price: '158',
+//     unit: '/次起',
+//     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_B51LuSAabxvpvhQltygUPSExLqDcfXEkVKerqpfomNM9XpySuXmz4vSZQgKBdw9gRnDAFsNPXt10YlUeMQFbUeGV9yIXxfjS9hkrT236EPld71aqNVrSI94UOYbh-6SpyyZz6LtXaHyrBE-2IN-_x0mEsyOtkK5fBaAHInRApHSBXD_mcrl0wpPJsY6lC1ic4dPxrb-2ENTCh3BLjPx5SIFlbUqbiDGBB0pUvqfs8zgpus07a_b4iyan2yP5OD2orP6V0H6HPQ'
+//   },
+//   {
+//     id: 3,
+//     name: '日式精细搬家·全程免手',
+//     sales: '450+',
+//     rating: '100',
+//     price: '588',
+//     unit: '/车起',
+//     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAQgez4vFcBbESVgJo-JfybzIXs5jjMYd8xrpBDllvyB0w4saBB_nzDC4iYnAvkrUrTh-q-E7NSYOyedH0fE6fPv7zgHQ2aPeVIzsptQgWrcee02VWSbVFYCoUTL2TkEwBB52jfh0YIfetTvhhX8nkey7TiPT3ot87UzgPih1i1drTE-Q4LeW0sE51V1q3tSND7yCuSzV1L3tKQ8wigfcUtYYR0u6XvZJjFsnj8Edr4JUJ2h_5E69TTpN4t2KqHiBI9yYSGPp-Sw'
+//   },
+//   {
+//     id: 4,
+//     name: '全身经络按摩·舒缓疲劳',
+//     sales: '2.1k+',
+//     rating: '99.2',
+//     price: '198',
+//     unit: '/60分钟',
+//     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHGIVXMQ8Tnzdl1j5MoII59FaRaAv0JJnxxTyqly56fcuHkYu0X8K9QaUOXiChKd05doIoIUX7op0jRtmZjx5y93Pzu2_f_hONXa21JGw3rAtqftoYSRhI_P21TSsB_klx4lkqt5AzUa4xknQUcuyNjZ1ekiQhnB6INMe5ybMornuj4nMdpqoeIK6rIIMy1m0P6YJHTTtpEKfsGO67Togyk-2vuWJOtgbNCKbdpeLkWEa01rshZg8P1mrkNRxKJAy_-0qznVGo9g'
+//   }
+// ])
 
+
+// getgoodsListAPI
 // 方法
 const setFilter = (type) => {
   activeFilter.value = type
@@ -64,6 +94,9 @@ const goToDetail = (id) => {
 }
 
 const onBook = (id) => {
+  uni.navigateTo({
+    url: '/pages/goodsDetail/Detail?id=' + id
+  })
   console.log('预约服务', id)
 }
 
@@ -127,16 +160,16 @@ const onBook = (id) => {
       <view class="service-list">
         <view
           class="service-card"
-          v-for="service in serviceList"
-          :key="service.id"
-          @click="goToDetail(service.id)"
+          v-for="service in goodsList"
+          :key="service.goodsId"
+          @click="goToDetail(service.goodsId)"
         >
-          <image class="service-img" :src="service.image" mode="aspectFill" />
+          <image class="service-img" :src="service.shopLogo" mode="aspectFill" />
           <view class="service-info">
             <view class="service-header">
-              <text class="service-name">{{ service.name }}</text>
+              <text class="service-name">{{ service.goodsName }}</text>
               <view class="meta-row">
-                <text class="sales">销量 {{ service.sales }}</text>
+                <text class="sales">销量 {{ service.salesCount }}</text>
                 <view class="divider"></view>
                 <text class="rating">好评率 {{ service.rating }}%</text>
               </view>
@@ -145,9 +178,9 @@ const onBook = (id) => {
               <view class="price-box">
                 <text class="currency">¥</text>
                 <text class="price">{{ service.price }}</text>
-                <text class="unit">{{ service.unit }}</text>
+                <text class="unit">/{{ service.unit }}</text>
               </view>
-              <button class="book-btn" @click.stop="onBook(service.id)">
+              <button class="book-btn" @click.stop="onBook(service.goodsId)">
                 预约
               </button>
             </view>

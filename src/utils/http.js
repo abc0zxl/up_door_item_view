@@ -13,7 +13,7 @@ import { useMemberStore } from "@/stores/modules/member"
 */
 
 //基础地址
-const baseURL = 'http://localhost:8080/api/v1/'
+const baseURL = 'http://localhost:8080/api/v1'
 
 
 //添加拦截器
@@ -34,15 +34,16 @@ const httpInterceptor = {
         // 小程序端请求头标识
         'source-client':'miniapp',
     }
-    const memberStore=useMemberStore()
-    const token=memberStore.profile?.token
-    if(token)
-    {
-        //如果有token，添加到请求头中
-        // 这里不报错的原因是options是js对象，不是ts接口
-        options.header.Authorization = token
-    }
-    console.log('请求被拦截了',options)
+    // const memberStore=useMemberStore()
+    // const token=memberStore.profile?.token
+    // // const token=123321
+    // if(token)
+    // {
+    //     //如果有token，添加到请求头中
+    //     // 这里不报错的原因是options是js对象，不是ts接口
+    //     options.header.Authorization = token
+    // }
+    // console.log('请求被拦截了,是http这里',options)
 
 }}
 // 添加拦截器   

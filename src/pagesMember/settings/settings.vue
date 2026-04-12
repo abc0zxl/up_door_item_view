@@ -139,7 +139,7 @@ const goBack = () => {
                   <view class="switch-thumb"></view>
                 </view>
               </view>
-              
+            
               <!-- 箭头 -->
               <text 
                 class="material-symbols-outlined arrow" 
