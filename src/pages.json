@@ -57,6 +57,12 @@
 			"style": {
 				"navigationBarTitleText": "商品详情"
 			}
+		},
+		{
+			"path": "pages/categoryList/categoryList",
+			"style": {
+				"navigationBarTitleText": "分类列表"
+			}
 		}
 	],
 	"globalStyle": {

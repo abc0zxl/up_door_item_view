@@ -4,6 +4,9 @@ import { ref, onMounted } from 'vue';
 import { getHomeBannerAPI } from '@/services/home';
 import IndexNavber from '@/components/indexNavber.vue';
 
+
+
+
 const bannerList = ref([])
 
 const getHomeBannerData = async () => {
@@ -21,10 +24,16 @@ onMounted(() => {
   getHomeBannerData()
 })
 
-const navigateToGoodsList = (value) => {
-  console.log("触发了点击事件", value)
+// const navigateToGoodsList = (value) => {
+//   console.log("触发了点击事件", value)
+//   uni.navigateTo({
+//     url: '/pages/goods/goods?type=' + value
+//   })
+// }
+
+const navigateToCategoryList = (value,title) =>{
   uni.navigateTo({
-    url: '/pages/goods/goods'
+    url: '/pages/categoryList/categoryList?cateId='+value+'&title='+title
   })
 }
 </script> 
@@ -60,57 +69,57 @@ const navigateToGoodsList = (value) => {
     <!-- 网格服务项 2列 -->
     <view class="grid-box">
       <!-- 1. 保洁 -->
-      <view class="item-card">
-        <view class="item-icon">
-          <text class="icon-font">1</text>
+      <view class="item-card" value="1" @click="navigateToCategoryList(1,'家庭保洁')">
+        <view class="item-icon" >
+          <img class="icon-font" src="/static/index/sweep.png" alt="保洁图标" />
         </view>
         <text class="item-title">保洁</text>
-        <!-- <text class="item-desc">深度清洁/日常保洁</text> -->
+        <text class="item-desc">深度清洁/日常保洁</text>
       </view>
 
       <!-- 2. 维修 -->
-      <view class="item-card">
-        <view class="item-icon">
-          <text class="icon-font">2</text>
+      <view class="item-card" value="2" @click="navigateToCategoryList(2,'家电维修')">
+        <view class="item-icon"  >
+          <img class="icon-font" src="/static/index/fix.png" alt="维修图标" />
         </view>
         <text class="item-title">维修</text>
-        <!-- <text class="item-desc">家电维护/房屋修缮</text> -->
+        <text class="item-desc">家电维护/房屋修缮</text>
       </view>
 
       <!-- 3. 换洗 -->
-      <view class="item-card" value="1" @click="navigateToGoodsList(value)">
+      <view class="item-card" value="3" @click="navigateToCategoryList(3,'上门换洗')">
         <view class="item-icon">
-          <text class="icon-font">3</text>
+          <img class="icon-font" src="/static/index/wash.png" alt="换洗图标" />
         </view>
         <text class="item-title">换洗</text>
-        <!-- <text class="item-desc">衣物洗护/床品除螨</text> -->
+        <text class="item-desc">衣物洗护/床品除螨</text>
       </view>
 
       <!-- 4. 搬运 -->
-      <view class="item-card">
-        <view class="item-icon">
-          <text class="icon-font">4</text>
+      <view class="item-card" value="4" @click="navigateToCategoryList(4,'搬运服务')">
+        <view class="item-icon" >
+          <img class="icon-font" src="/static/index/carry.png" alt="搬运图标" />
         </view>
         <text class="item-title">搬运</text>
-        <!-- <text class="item-desc">同城搬家/大件运输</text> -->
+        <text class="item-desc">同城搬家/大件运输</text>
       </view>
 
       <!-- 5. 喂养 -->
-      <view class="item-card">
-        <view class="item-icon">
-          <text class="icon-font">5</text>
+      <view class="item-card" value="5" @click="navigateToCategoryList(5,'上门喂养')">
+        <view class="item-icon" >
+          <img class="icon-font" src="/static/index/feed.png" alt="喂养图标" />
         </view>
         <text class="item-title">喂养</text>
-        <!-- <text class="item-desc">宠物喂养/上门遛狗</text> -->
+        <text class="item-desc">宠物喂养/上门遛狗</text>
       </view>
 
       <!-- 6. 管道 -->
-      <view class="item-card">
-        <view class="item-icon">
-          <text class="icon-font">6</text>
+      <view class="item-card" value="6" @click="navigateToCategoryList(6,'管道疏通')">
+        <view class="item-icon" >
+          <img class="icon-font" src="/static/index/unblock.png" alt="管道图标" />
         </view>
         <text class="item-title">管道</text>
-        <!-- <text class="item-desc">疏通管道/漏水检测</text> -->
+        <text class="item-desc">疏通管道/漏水检测</text>
       </view>
     </view>
 
@@ -132,7 +141,9 @@ const navigateToGoodsList = (value) => {
 <style>
 /* 最外层 */
 
-
+.c1{
+  padding-top: 200rpx;
+}
 /* 轮播图外层：定位基准 */
 .swiper-container {
   position: relative; /* 关键：让搜索框相对于它定位 */
@@ -223,6 +234,7 @@ const navigateToGoodsList = (value) => {
 ------------------------------ */
 .item-card {
   width: 48%;
+  /* height: 48%; */
   background: rgba(255, 255, 255, 0.8);
   border-radius: 40rpx;
   border: 1rpx solid rgba(255, 237, 213, 0.5);
@@ -247,6 +259,7 @@ const navigateToGoodsList = (value) => {
   width: 60px;
   height: 60px;
   background-color: #ffedd5;
+  /* background-color: #1cffbf8b; */
   border-radius: 30rpx;
   display: flex;
   align-items: center;
@@ -256,14 +269,21 @@ const navigateToGoodsList = (value) => {
 
 /* 图标字体 */
 .icon-font {
-  font-family: "Material Icons Outlined";
+  width: 80%;
+  height: 80%;
+  justify-content: center;
+  /* padding: 20rpx 20rpx 20rpx 20rpx; */
+  /* background-color: #eae1e1; */
+  /* border: 10rpx 10rpx; */
+  /* font-family: "Material Icons Outlined";
   font-size: 40rpx;
-  color: #ea580c;
+  color: #ea580c; */
+  /* margin: 0 auto; */
 }
 
 /* 标题 */
 .item-title {
-  font-size: 28rpx;
+  font-size: 35rpx;
   font-weight: bold;
   color: #1c1917;
 }
@@ -271,6 +291,7 @@ const navigateToGoodsList = (value) => {
 /* 描述 */
 .item-desc {
   font-size: 20rpx;
+  font-weight:900;
   color: #78716c;
   margin-top: 8rpx;
 }

@@ -1,7 +1,9 @@
 <script>
 
 //获取安全区域
+
 const systemInfo = uni.getSystemInfoSync()
+console.log(systemInfo)
 const safeAreaTop = systemInfo.safeArea?.top || 0
 //
 </script>
@@ -22,12 +24,17 @@ const safeAreaTop = systemInfo.safeArea?.top || 0
 //   background-image: url("@/static/image/nav_bg.png");
   background-color: #ffffff;
   background-size: cover;
-  position: relative;
+  // position: relative;
+  position: fixed;
   display: flex;
   height: 160rpx; /* 给导航一个高度 */
-  z-index: 1; /* 确保导航栏显示在正确层级 */
+  // z-index: 1; /* 确保导航栏显示在正确层级 */
   flex-direction: column;
   padding-top: 20px;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
   .logo {
     display: flex;
     align-items: center;

@@ -2,8 +2,18 @@
 import SangSwiper from '@/components/SangSwiper_category.vue';
 import { ref, onMounted } from 'vue';
 import { getHomeBannerAPI } from '@/services/home';
+import { getCategoryListAPI } from '@/services/catelog';
 // import IndexNavber from './components/indexNavber.vue';
 const bannerList = ref([])
+const categoryList = ref([])
+const params = {
+  categoryId: 2,
+  sortBy: "consequat exercitation ullamco qui",
+  cityCode: "97",
+  pageNum: 1,
+  pageSize: 3
+}
+
 
 const getHomeBannerData = async () => {
   try {
@@ -16,9 +26,23 @@ const getHomeBannerData = async () => {
   }
 }
 
+const getCategoryListData = async () => {
+  try {
+    console.log("开始申请分类数据")
+    const res = await getCategoryListAPI(params)
+    console.log("分类数据", res)
+    categoryList.value = res.data.list || []
+    console.log(categoryList.value)
+  } catch (e) {
+    console.error("请求失败", e)
+  }
+}
+
+
 onMounted(() => {
   getHomeBannerData()
   console.log("轮播图请求完成")
+  getCategoryListData()
 })
 
 // const handlRquest=()=>{
@@ -109,8 +133,8 @@ const specialList = ref([
         </view>
 
         <!-- 常用服务 -->
-        <view class="section">
-          <!-- <button @click="handlRquest">手动请求</button> -->
+        <!-- <view class="section">
+          <button @click="handlRquest">手动请求</button>
           <view class="section-title">常用保洁</view>
           <view class="grid-box">
             <view v-for="(item, idx) in commonList" :key="idx" class="grid-item">
@@ -118,15 +142,15 @@ const specialList = ref([
               <view class="item-text">{{ item.name }}</view>
             </view>
           </view>
-        </view>
+        </view> -->
 
         <!-- 专项服务 -->
         <view class="section">
           <view class="section-title">专项服务</view>
           <view class="grid-box">
-            <view v-for="(item, idx) in specialList" :key="idx" class="grid-item">
-              <view class="item-icon">{{ item.icon }}</view>
-              <view class="item-text">{{ item.name }}</view>
+            <view v-for="(item, idx) in categoryList" :key="idx" class="grid-item">
+              <view class="item-icon">A</view>
+              <view class="item-text">{{ item.serviceName }}</view>
             </view>
           </view>
         </view>

@@ -6,18 +6,28 @@ import { getgoodsListAPI } from '@/services/goods';
 
 const goodsList = ref([])
 
-
+const categoryId = defineProps({
+  serviceId:{
+    type:Number,
+    default:100005
+  },
+  categoryId:{
+    type:Number,
+    default:1
+  }
+})
 const params = {
-  categoryId: 2,
-  serviceId: 100005,
   sortBy: 'sales',
   cityCode: '64',
   pageNum: 1,
-  pageSize: 3
+  pageSize: 10
 }
 
 const getGoodsListData = async () => {
   try {
+    params.categoryId = categoryId.categoryId
+    params.serviceId = categoryId.serviceId
+    console.log("goods页面获取的数据"+categoryId.serviceId+"和"+categoryId.categoryId)
     const res = await getgoodsListAPI(params)
     console.log("商品数据", res)
     goodsList.value = res.data.list || []

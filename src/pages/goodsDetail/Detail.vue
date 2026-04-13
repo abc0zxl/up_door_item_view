@@ -336,7 +336,7 @@ const addToCart = () => {
           </view>
         </view>
 
-        <view class="service-title">{{ goodsdata.serviceName }}</view>
+        <view class="service-title">{{ goodsdata.goodsName }}</view>
         <view class="service-desc">{{ goodsdata.description }}</view>
 
         <view class="tag-list">
