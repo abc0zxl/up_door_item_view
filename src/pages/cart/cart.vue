@@ -1,5 +1,42 @@
 <script setup>
-import { ref } from 'vue';
+import { ref , onMounted, computed } from 'vue';
+import { getCartListAPI } from '@/services/cart.js'
+
+const cartList = ref([])   //总购物车列表
+const cartList_R = ref([])  //记录被选中的购物车列表
+const params = {
+  userId:10012
+}
+const selectedItems = ref([]);
+const allPrice = ref(0);
+// const recommendList = ref([])
+// 获取购物车列表
+
+const getCarList = async () => {
+  const res = await getCartListAPI(params)
+  cartList.value = res.data
+  console.log("购物车列表",cartList.value)
+  // recommendList.value = res.data
+  //
+
+  //将每个复选框默认全选
+    // 初始化每个商品的选中状态
+  // const initialSelected = {}
+  // cartList.value.forEach((item, index) => {
+  //   initialSelected[index] = true  // 默认全选
+  // })
+  // selectedItems.value = initialSelected
+  //全部复选框默认选中，不用selectedItems
+  cartList.value.forEach((item,index)=>{
+    item.selected=true
+  })
+  // console.log("购物车列表",cartList.value)
+  // console.log("复选框列表",selectedItems.value)
+  // console.log("推荐列表",recommendList.value)
+} 
+onMounted(() => {
+  getCarList()
+})
 
 // 猜你喜欢
 const recommendList = ref([
@@ -14,16 +51,41 @@ const recommendList = ref([
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCw08GPgOP5MgMSZhBixBG1575pFZGxSpPRBo6iIawBLXMXcbEc8VZP_3Arda66Bj1W3WjApRC0z7TXqSv--3m_JlAKHHJMzMDClwcXH6MDlJDEenQJF_O6uvjVh60nFC2mQnukXzc6VdENhXrkxpaW5P5UxHmTjMKy3b8K_iRGa_LBJOTp38eN5-H_D3-Br_-8H3dqb48AoxnHnMdgst3T7R2KxkbEbE1NtdZILT1mXNJK_NsY2lPBji-QvEpxHNHRlwEwoCbjgA"
   }
 ])
-const flat = ref(true)
+// const flat = ref(true)
 
-const handleCheckChange = () => {
-  console.log('checkbox changed:', !flat)
-  flat.value = !flat.value  // 注意要使用 .value
+// const handleCheckChange = () => {
+//   console.log('checkbox changed:', !flat)
+//   flat.value = !flat.value  // 注意要使用 .value
+// }
+//触发复选框，记录被选中的购物车列表
+const handleCheckChange = (item) => {
+  console.log('checkbox changed, item:', item)
+  item.selected = !item.selected
 }
 
+// 全选状态
+// const isAllSelected = computed(() => {
+//   return cartList.value.length > 0 && cartList.value.every((item, index) => selectedItems.value[index])
+// })
+const selectAll=computed(()=>{
+  // 获取所有商品是否被选中的状态
+  return cartList.value.every(item=>item.selected)
+})
+// 切换全选
+const handleAllCheckChange = () => {
+  const newState = !selectAll.value
+  cartList.value.forEach((item, index) => {
+    item.selected = newState
+  })
+}
 
-// 控制选中状态
+const totalselect=computed(()=>{
+  return cartList.value.filter((item)=>item.selected)
+  })
 
+const totalMoney=computed(()=>{
+  return totalselect.value.reduce((sum,item)=>sum+item.quantity*item.price,0)
+})
 
 // onLoad(() => {})
 
@@ -39,26 +101,28 @@ const handleCheckChange = () => {
 
       <!-- 购物车商品1 -->
       <!-- ✅ 动态样式 -->
-      <view class="cart-item" :class="{ select: !flat }">
+      <view v-for="(item, index) in cartList" :key="index">
+      <view class="cart-item" :class="{ select: !item.selected }">
         <!-- ✅ 绑定 checked + 事件 -->
         <checkbox 
           class="check-box" 
-          :checked="flat" 
-          @tap="handleCheckChange"
+          :checked="item.selected" 
+          @tap="handleCheckChange(item)"
         />
-        <image class="item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjUj6lPetvB1Ro_YTWgF-8ORcotVMB1ZP5evAvK78thP3B2VZzijkMJdEAqzinYzKNPFXhIRvmREVgYwYJL0koS1Gt4bbYLCS_B8Ec-JjhhusGP1puvWOGVIlGcYpLMyBL8u5SgxqDIei67m9-Mw1EkD4MHA3gn6AocUMhTWezsFUWyuRVGPtF-6QpNN_bdmbOPziYXB5NOpmvvQC-nYJ11sLP5xIfMxF3rFaarIHtFLFtuynH65CX9CbCmTH-ku_3aTh3ukOsTA" mode="aspectFill"></image>
+        <image class="item-img" :src="item.image"  mode="aspectFill"></image>
         <view class="item-info">
           <view>
-            <text class="item-name">Full House Deep Cleaning 4h</text>
+            <text class="item-name">{{ item.goodsName }}</text>
           </view>
           <view>
-            <view class="item-tag">种类: 深度保洁</view>
+            <view class="item-tag">种类: {{ item.skuName }}</view>
           </view>
           <view class="flex-row">
-            <text class="item-qty">数量: x1</text>
-            <text class="item-price">¥299.00</text>
+            <text class="item-qty">数量: x{{ item.quantity }}</text>
+            <text class="item-price">¥{{ item.price }}</text>
           </view>
         </view>
+      </view>
       </view>
 
       <!-- 猜你喜欢 -->
@@ -78,14 +142,14 @@ const handleCheckChange = () => {
 
     <!-- 底部结算栏 -->
     <view class="checkout-bar">
-      <view class="check-left">
-        <checkbox class="check-box" value="all" checked />
+        <view class="check-left" @click="handleAllCheckChange">
+          <checkbox class="check-box" :checked="selectAll"/>
         <text class="check-text">全选</text>
       </view>
       <view class="check-right">
         <view class="price-box">
           <text class="price-tip">合计:</text>
-          <text class="total-price">¥457.00</text>
+          <text class="total-price">¥{{ totalMoney }}</text>
         </view>
         <button class="pay-btn">结算 (2)</button>
       </view>

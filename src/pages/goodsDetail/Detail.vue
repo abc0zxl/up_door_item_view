@@ -2,6 +2,7 @@
 import { ref,reactive, onMounted } from 'vue'
 import { getgoodsDetailAPI } from '@/services/goods.js'
 import { getgoodsSkuAPI } from '@/services/goods.js'
+import { addCartAPI } from '@/services/cart.js'
 
 
 
@@ -22,6 +23,7 @@ const skuMode = ref(1)           // SKU弹窗模式
 const goodsInfo = ref({})         // 商品信息
 const goodsDetail = ref({})       // 商品详情信息
 const goodsdata = ref({})
+const cartParams = ref({})     // 加入购物车参数
 
 
 
@@ -31,9 +33,8 @@ const goodsdata = ref({})
 // }
 
 // 打开SKU弹窗 + 设置商品数据
-const openSkuPopup = () => {
-  // 模拟接口返回的商品信息
-
+const openSkuPopup = (number) => {
+  // 模拟接口返回的商品信
     //  goodsInfo.value = {}
   // goodsInfo.value = {
   //   "_id": "001",
@@ -95,6 +96,35 @@ const openSkuPopup = () => {
   // }
   skuKey.value = true
   console.log("已打开sku")
+  skuMode.value=number
+}
+
+
+
+const onAddCart=async (ev) => {
+  //凑齐参数
+  cartParams.value = {
+    skuId:ev.id,
+    userId:10012,
+    quantity:ev.buy_num,
+    goodsId:ev.goodsId,
+    shopId:ev.shopId
+    // count:ev.buy_num,
+    // goodsId:ev.goods_id,
+    }
+    console.log("凑齐了加入购物车的参数",cartParams.value)
+  await addCartAPI(cartParams.value)
+  // console.log('加入购物车')
+  uni.showToast({
+    title:'加入购物车成功',
+    icon:'success'
+  })
+  // 关闭弹窗
+  isShow.value=false
+}
+
+const onBuyNow=(params)=>{
+  uni.navigateTo({url:`/pages/pageOrder/create/create?skuId=${params._id}&count=${params.buy_num}`})
 }
 
   const getGoodsSku = async (params) => {
@@ -117,33 +147,33 @@ const onCloseSkuPopup = () => {
   console.log("监听 - 关闭sku组件")
 }
 
-// 加入购物车前的判断
-const addCartFn = (obj) => {
-  const { selectShop } = obj
-  let res = {}
-  let name = selectShop.goods_name
+// // 加入购物车前的判断
+// const addCartFn = (obj) => {
+//   const { selectShop } = obj
+//   let res = {}
+//   let name = selectShop.goods_name
   
-  if (selectShop.sku_name !== "默认") {
-    name += "-" + selectShop.sku_name_arr.join(',')
-  }
+//   if (selectShop.sku_name !== "默认") {
+//     name += "-" + selectShop.sku_name_arr.join(',')
+//   }
   
-  res.msg = `${name} 已添加到购物车`
-  if (typeof obj.success === "function") obj.success(res)
-}
+//   res.msg = `${name} 已添加到购物车`
+//   if (typeof obj.success === "function") obj.success(res)
+// }
 
-// 加入购物车
-const addCart = (selectShop) => {
-  console.log("监听 - 加入购物车")
-  addCartFn({
-    selectShop: selectShop,
-    success: (res) => {
-      toast(res.msg)
-      setTimeout(() => {
-        skuKey.value = false
-      }, 300)
-    }
-  })
-}
+// // 加入购物车
+// const addCart = (selectShop) => {
+//   console.log("监听 - 加入购物车")
+//   addCartFn({
+//     selectShop: selectShop,
+//     success: (res) => {
+//       toast(res.msg)
+//       setTimeout(() => {
+//         skuKey.value = false
+//       }, 300)
+//     }
+//   })
+// }
 
 // 立即购买
 // const buyNow = (selectShop) => {
@@ -311,7 +341,9 @@ const addToCart = () => {
       <view class="navbar-divider"></view>
     </view> -->
 
-
+<!-- 
+            @open="onOpenSkuPopup"
+            @close="onCloseSkuPopup" -->
 
 <!-- 商品种类选择 -->
         <vk-data-goods-sku-popup
@@ -321,10 +353,8 @@ const addToCart = () => {
             :z-index="990"
             :localdata="goodsInfo"
             :mode="skuMode"
-            @open="onOpenSkuPopup"
-            @close="onCloseSkuPopup"
-            @add-cart="addCart"
-            @buy-now="buyNow"
+            @add-cart="onAddCart"
+            @buy-now="onBuyNow"
         ></vk-data-goods-sku-popup>
     <main class="main-content">
       <!-- 轮播图区域 -->
@@ -347,6 +377,12 @@ const addToCart = () => {
           </view>
           <view class="stats-box">
             <view class="stats-row">
+              <text class="stat"></text>
+              <text class="stat"></text>
+              <text class="stat"></text>
+              <text class="stat"></text>
+              <text class="stat"></text>
+              <text class="stat"></text>
               <text class="stat">{{ goodsdata.salesCount }}+ 已订</text>
               <text class="stat">{{ goodsdata.rating }}% 好评</text>
             </view>
@@ -425,8 +461,8 @@ const addToCart = () => {
         </button>
       </view>
       <view class="cta-buttons">
-        <button class="cta-btn add-cart" @click="addToCart">加入购物车</button>
-        <button class="cta-btn buy-now" @click="openSkuPopup()">立即购买</button>
+        <button class="cta-btn add-cart" @click="openSkuPopup(2),addToCart">加入购物车</button>
+        <button class="cta-btn buy-now" @click="openSkuPopup(3)">立即购买</button>
       </view>
     </view>
   </view>
@@ -592,7 +628,12 @@ $outline-variant: #adadac;
   gap: 4px;
 
   .stats-row {
+    // padding-right: 5px;
+    // right:5px;
+    // margin-right: 5px;
     display: flex;
+    // justify-content: flex-end;
+    // align-items: center;
     gap: 12px;
 
     .stat {

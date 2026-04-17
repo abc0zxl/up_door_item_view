@@ -777,6 +777,7 @@ console.log('匹配结果:', shopItemInfo.value[key]);
           selectShopData.buy_num = selectNum.value;
           emit('add-cart', selectShopData);
           emit('cart', selectShopData);
+          console.log("通过了checkSelectComplete函数，这个参数是",selectShopData)
         }
       });
     };
