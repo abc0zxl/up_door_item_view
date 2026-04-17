@@ -1,7 +1,7 @@
-
 <script setup>
 import { ref,reactive, onMounted } from 'vue'
 import { getgoodsDetailAPI } from '@/services/goods.js'
+import { getgoodsSkuAPI } from '@/services/goods.js'
 
 
 
@@ -33,67 +33,81 @@ const goodsdata = ref({})
 // 打开SKU弹窗 + 设置商品数据
 const openSkuPopup = () => {
   // 模拟接口返回的商品信息
-  goodsInfo.value = {
-    "_id": "001",
-    "name": "iphone11",
-    "goods_thumb": "https://img14.360buyimg.com/n0/jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg",
-    "sku_list": [
-      {
-        "_id": "001",
-        "goods_id": "001",
-        "goods_name": "iphone11",
-        "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
-        "price": 19800,
-        "sku_name_arr": ["红色", "128G", "公开版"],
-        "stock": 1000
-      },
-      {
-        "_id": "002",
-        "goods_id": "001",
-        "goods_name": "iphone11",
-        "image": "https://img14.360buyimg.com/n0/jfs/t1/52252/35/10516/124064/5d7808e0E46202391/7100f3733a1c1f00.jpg",
-        "price": 9800,
-        "sku_name_arr": ["白色", "256G", "公开版"],
-        "stock": 100
-      },
-      {
-        "_id": "003",
-        "goods_id": "001",
-        "goods_name": "iphone11",
-        "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
-        "price": 19800,
-        "sku_name_arr": ["红色", "256G", "公开版"],
-        "stock": 1
-      }
-    ],
-    "spec_list": [
-      {
-        "name": "颜色",
-        "list": [
-          { "name": "红色" },
-          { "name": "黑色" },
-          { "name": "白色" }
-        ]
-      },
-      {
-        "name": "内存",
-        "list": [
-          { "name": "128G" },
-          { "name": "256G" }
-        ],
-      },
-      {
-        "name": "版本",
-        "list": [
-          { "name": "公开版" },
-          { "name": "非公开版" }
-        ]
-      }
-    ]
-  }
+
+    //  goodsInfo.value = {}
+  // goodsInfo.value = {
+  //   "_id": "001",
+  //   "name": "iphone11",
+  //   "goods_thumb": "https://img14.360buyimg.com/n0/jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg",
+  //   "sku_list": [
+  //     {
+  //       "_id": "001",
+  //       "goods_id": "001",
+  //       "goods_name": "iphone11",
+  //       "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
+  //       "price": 19800,
+  //       "sku_name_arr": ["红色", "128G", "公开版"],
+  //       "stock": 1000
+  //     },
+  //     {
+  //       "_id": "002",
+  //       "goods_id": "001",
+  //       "goods_name": "iphone11",
+  //       "image": "https://img14.360buyimg.com/n0/jfs/t1/52252/35/10516/124064/5d7808e0E46202391/7100f3733a1c1f00.jpg",
+  //       "price": 9800,
+  //       "sku_name_arr": ["白色", "256G", "公开版"],
+  //       "stock": 100
+  //     },
+  //     {
+  //       "_id": "003",
+  //       "goods_id": "001",
+  //       "goods_name": "iphone11",
+  //       "image": "https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg",
+  //       "price": 19800,
+  //       "sku_name_arr": ["红色", "256G", "公开版"],
+  //       "stock": 1
+  //     }
+  //   ],
+  //   "spec_list": [
+  //     {
+  //       "name": "颜色",
+  //       "list": [
+  //         { "name": "红色" },
+  //         { "name": "黑色" },
+  //         { "name": "白色" }
+  //       ]
+  //     },
+  //     {
+  //       "name": "内存",
+  //       "list": [
+  //         { "name": "128G" },
+  //         { "name": "256G" }
+  //       ],
+  //     },
+  //     {
+  //       "name": "版本",
+  //       "list": [
+  //         { "name": "公开版" },
+  //         { "name": "非公开版" }
+  //       ]
+  //     }
+  //   ]
+  // }
   skuKey.value = true
   console.log("已打开sku")
 }
+
+  const getGoodsSku = async (params) => {
+  console.log("开始发送商品sku请求...")
+  const res = await getgoodsSkuAPI(params);
+  console.log(res.data);
+  console.log("成功获取到参数")
+  //导入参数
+  goodsInfo.value = res.data
+    // skuKey.value = true
+  // console.log("已打开sku")
+}
+
 
 // SKU 事件监听
 const onOpenSkuPopup = () => {
@@ -220,7 +234,11 @@ const getGoodsDetail = async () => {
 onMounted((options) => {
   // init(options)
   getGoodsDetail()
+  getGoodsSku(query.id)
 })
+// onLoad(()=>{
+//     getGoodsByIdData()
+//   })
 
 
 

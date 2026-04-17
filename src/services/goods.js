@@ -22,3 +22,10 @@ export const getgoodsDetailAPI = (params) => {
         // }
     })
 }
+
+export const getgoodsSkuAPI = (params) => {
+    return http({
+        method:'GET',
+        url:'/client/service/SkuInfo?goodsid='+params,
+    })
+}

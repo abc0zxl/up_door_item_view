@@ -43,22 +43,26 @@ export default {
     // 商品表id的字段名
     goodsIdName: {
       type: String,
-      default: '_id'
+      // default: '_id'
+      default: 'id'
     },
     // sku表id的字段名
     skuIdName: {
       type: String,
-      default: '_id'
+      // default: '_id'
+      default: 'id'
     },
     // sku_list的字段名
     skuListName: {
       type: String,
-      default: 'sku_list'
+      // default: 'sku_list'
+      default: 'skuList'
     },
     // spec_list的字段名
     specListName: {
       type: String,
-      default: 'spec_list'
+      // default: 'spec_list'
+      default: 'specList'
     },
     // 库存的字段名 默认 stock
     stockName: {
@@ -68,7 +72,8 @@ export default {
     // sku组合路径的字段名
     skuArrName: {
       type: String,
-      default: 'sku_name_arr'
+      // default: 'sku_name_arr'
+      default: 'skuNameArr'
     },
     // 默认单规格时的规格组名称
     defaultSingleSkuName: {
@@ -93,7 +98,8 @@ export default {
     // 商品缩略图字段名(未选择sku时)
     goodsThumbName: {
       type: [String],
-      default: 'goods_thumb'
+      // default: 'goods_thumb'
+      default: 'goodsThumb'
     },
     // 商品缩略图背景颜色，如#999999
     goodsThumbBackgroundColor: {
@@ -222,7 +228,7 @@ export default {
      */
     amountType: {
       type: Number,
-      default: 1
+      default: 0
     },
     // 每次选择完SKU后，购买数量归1，如果有最小购买数量，则设置为最小购买数量
     selectedInit: {
@@ -330,6 +336,9 @@ export default {
         }
       }
     };
+
+
+    // SkuPopupLocaldata,SkuPopupEvent，SkuPopupProps
     
     // 计算属性
     const valueCom = computed(() => {
@@ -410,11 +419,14 @@ export default {
       let str = '';
       arr.map((item, index) => {
         item = item.replace(/\./g, '。');
+        console.log("测试点2 替换完后的字符串为", item);
         if (index == 0) {
           str += item;
+          console.log("测试点3 最终字符串为", str);
         } else {
           str += ',' + item;
         }
+        
       });
       return str;
     };
@@ -450,6 +462,8 @@ export default {
     
     const checkItem = () => {
       const { stockName, skuListName, skuArrName } = props;
+      console.log("这个skuListName为", skuListName);
+      console.log("这个skuArrName为", skuArrName);
       const originalSkuList = goodsInfo.value[skuListName];
       let skuList = [];
       let stockNum = 0;
@@ -473,6 +487,7 @@ export default {
                     if (!Object.prototype.hasOwnProperty.call(shopItemInfo.value, getArrayToString([...item2, item]))) {
                       shopItemInfo.value[getArrayToString([...item2, item])] = items;
                     }
+                    console.log("测试点6 匹配成功shopItemInfo.value", shopItemInfo.value[getArrayToString([...item2, item])]);
                     return [...item2, item];
                   })
                 );
@@ -512,8 +527,17 @@ export default {
     
     const checkSelectShop = () => {
       if (selectArr.value.every(item => item != '')) {
+        console.log('测试点4 selectArr.value', selectArr.value);
         selectShop.value = shopItemInfo.value[getArrayToString(selectArr.value)];
+        console.log('测试点5 匹配成功selectShop.value', selectShop.value);
         let stock = selectShop.value[props.stockName];
+
+        const key = getArrayToString(selectArr.value);
+console.log('当前选中的规格数组:', selectArr.value);
+console.log('生成的匹配键:', key);
+console.log('映射表中所有键:', Object.keys(shopItemInfo.value));
+console.log('匹配结果:', shopItemInfo.value[key]);
+
         if (typeof stock !== 'undefined' && selectNum.value > stock) {
           selectNum.value = stock;
         }
@@ -569,6 +593,7 @@ export default {
         if (selectArr.value[index1] != value.name) {
           selectArr.value[index1] = value.name;
           subIndex.value[index1] = index2;
+          console.log('测试点1selectArr.value', selectArr.value);
         } else {
           selectArr.value[index1] = '';
           subIndex.value[index1] = -1;
