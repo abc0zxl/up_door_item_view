@@ -2,8 +2,9 @@
 <script setup>
 import { ref,onMounted,watch,computed } from 'vue'
 import { getAddressById } from '@/services/user'
-import { getOrderConfirmAPI } from '@/services/order'
+import { getOrderConfirmAPI,createOrderAPI } from '@/services/order'
 import { useAddress } from '@/stores/modules/addressStore'
+
 
 
 
@@ -74,25 +75,30 @@ const getOrderParam = {
   quantity: 2,
   appointmentTime: "2026-04-18 17:12",
   skuId: 200001,
-  token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1Njc1NjEsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.DkHfZ6M5FSu6T_lDYZVktL1GCu6XRBt6R4R-NbgMuls"
+  token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1NzgwNzAsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.5q6k1yRF5JviNyCYCP1ioVSpf17Q7tK0HPHjXoErghs"
 }
-// const orderParam = {
-//   orderNo: serviceInfo.value.orderNo,
-//   orderStatus:"CreateOrder",
-//   goodsId: serviceInfo.value.goodsId,
-//   quantity: serviceInfo.value.quantity,
-//   appointmentTime: serviceInfo.value.serviceTime,
-//   skuId: serviceInfo.value.skuId,
-//   shopId: serviceInfo.value.shopId,
-//   addressId:20017,
-//   registerTime: "2024-05-20 14:00",
-//   token:"fsdafsafadsfwe"
-// }
+
+
+// 封装一个格式化当前时间的函数
+function formatCurrentDateTime() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0') // 月份从0开始，+1后补0
+  const day = String(now.getDate()).padStart(2, '0')
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
+
+  // 格式：yyyy-MM-dd HH:mm
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+  // 如果后端要求到秒，改成下面这行：
+  // return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
 
 const getOrderComfirmInfo = async () => {
   const res= await getOrderConfirmAPI(getOrderParam)
   serviceInfo.value = res.data
-    console.log(serviceInfo.value)
+    console.log("获取订单确认信息",serviceInfo.value)
 
 }
 
@@ -208,14 +214,57 @@ const handlePay = () => {
     title: '确认支付',
     content: `订单金额：¥${serviceInfo.value.totalAmount}`,
     confirmText: '去支付',
-    success: (res) => {
+    success: async (res) => {
+
       if (res.confirm) {
-        uni.showToast({
-          title: '支付功能演示',
-          icon: 'none'
-        })
+        const orderParam = {
+  orderNo: serviceInfo.value.orderNo,
+  orderStatus:"CreateOrder",
+  goodsId: getOrderParam.goodsId,
+  quantity: serviceInfo.value.quantity,
+  appointmentTime: getOrderParam.appointmentTime,
+  skuId: serviceInfo.value.skuId,
+  addressId:addressId.value,
+  registerTime: formatCurrentDateTime(),
+  token:"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1NzgwNzAsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.5q6k1yRF5JviNyCYCP1ioVSpf17Q7tK0HPHjXoErghs"
+}
+        // uni.showToast({
+        //   title: '支付功能演示',
+        //   icon: 'none'
+        // })
+        try{
+
+          console.log("请求参数是",orderParam)
+          console.log("开始查询订单状态")
+          const res = await createOrderAPI(orderParam)
+          console.log("创建订单后端返回结构",res)
+
+          if( res.code == 409 ){
+            uni.showToast({
+              title: '订单重复，请勿重复下单',
+              icon: 'none'
+            })
+          }else if( res.code == 200 ){
+            uni.showToast({
+              title: '下单成功，去支付',
+              icon: 'success'
+            })
+              uni.navigateTo({ url: '/pages/pageOrder/orderPay/orderPay' })
+
+          }else{
+            uni.showToast({
+              title: '下单失败',
+              icon: 'none'
+            })
+          }
+        }catch(err){
+          console.error('下单接口异常：', err)
+          uni.showToast({
+            title: '下单失败',
+            icon: 'none'
+          })
+        }
         // 实际支付逻辑可在此调用支付接口
-        uni.navigateTo({ url: '/pages/pageOrder/orderPay/orderPay' })
       }
     }
   })

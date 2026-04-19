@@ -10,4 +10,14 @@ export const getOrderConfirmAPI = (params) => {
     })
 }
 
+export const createOrderAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/order/addOrder',
+        data:{
+            ...params
+        }
+    })
+}
+
 
