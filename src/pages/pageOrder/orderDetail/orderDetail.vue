@@ -1,3 +1,76 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+
+
+// 获取状态栏高度
+const statusBarHeight = ref(20)
+try {
+  const systemInfo = uni.getSystemInfoSync()
+  statusBarHeight.value = systemInfo.statusBarHeight || 20
+} catch(e) {}
+
+// 返回上一页
+const handleBack = () => {
+  uni.navigateBack({
+    delta: 1,
+    fail: () => {
+      uni.switchTab({ url: '/pages/index/index' })
+    }
+  })
+}
+
+// 跳转个人中心
+const goToProfile = () => {
+  uni.navigateTo({ url: '/pages/profile/profile' })
+}
+
+// 复制订单号
+const copyOrderNo = () => {
+  uni.setClipboardData({
+    data: 'SH202405199827',
+    success: () => {
+      uni.showToast({ title: '订单号已复制', icon: 'success' })
+    }
+  })
+}
+
+// 取消订单
+const cancelOrder = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确认取消该订单吗？取消后金额将原路退回。',
+    confirmColor: '#924700',
+    success: (res) => {
+      if (res.confirm) {
+        uni.showToast({ title: '订单已取消', icon: 'none' })
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 1500)
+      }
+    }
+  })
+}
+
+// 联系商家
+const contactMerchant = () => {
+  uni.showActionSheet({
+    itemList: ['拨打电话 400-882-6688', '在线咨询'],
+    success: (res) => {
+      if (res.tapIndex === 0) {
+        uni.makePhoneCall({ phoneNumber: '4008826688' })
+      } else {
+        uni.showToast({ title: '聊天功能开发中', icon: 'none' })
+      }
+    }
+  })
+}
+
+// 查看商家详情
+const viewMerchant = () => {
+  uni.showToast({ title: '商家主页开发中', icon: 'none' })
+}
+</script>
+
 <template>
   <view class="pay-success-page">
     <!-- 状态栏占位 -->
@@ -129,77 +202,7 @@
   </view>
 </template>
 
-<script setup>
-import { ref } from 'vue'
 
-// 获取状态栏高度
-const statusBarHeight = ref(20)
-try {
-  const systemInfo = uni.getSystemInfoSync()
-  statusBarHeight.value = systemInfo.statusBarHeight || 20
-} catch(e) {}
-
-// 返回上一页
-const handleBack = () => {
-  uni.navigateBack({
-    delta: 1,
-    fail: () => {
-      uni.switchTab({ url: '/pages/index/index' })
-    }
-  })
-}
-
-// 跳转个人中心
-const goToProfile = () => {
-  uni.navigateTo({ url: '/pages/profile/profile' })
-}
-
-// 复制订单号
-const copyOrderNo = () => {
-  uni.setClipboardData({
-    data: 'SH202405199827',
-    success: () => {
-      uni.showToast({ title: '订单号已复制', icon: 'success' })
-    }
-  })
-}
-
-// 取消订单
-const cancelOrder = () => {
-  uni.showModal({
-    title: '提示',
-    content: '确认取消该订单吗？取消后金额将原路退回。',
-    confirmColor: '#924700',
-    success: (res) => {
-      if (res.confirm) {
-        uni.showToast({ title: '订单已取消', icon: 'none' })
-        setTimeout(() => {
-          uni.navigateBack()
-        }, 1500)
-      }
-    }
-  })
-}
-
-// 联系商家
-const contactMerchant = () => {
-  uni.showActionSheet({
-    itemList: ['拨打电话 400-882-6688', '在线咨询'],
-    success: (res) => {
-      if (res.tapIndex === 0) {
-        uni.makePhoneCall({ phoneNumber: '4008826688' })
-      } else {
-        uni.showToast({ title: '聊天功能开发中', icon: 'none' })
-      }
-    }
-  })
-}
-
-// 查看商家详情
-const viewMerchant = () => {
-  uni.showToast({ title: '商家主页开发中', icon: 'none' })
-}
-</script>
 
 <style lang="scss" scoped>
 // 颜色变量

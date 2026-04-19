@@ -1,3 +1,151 @@
+<script setup>
+import { ref,onMounted } from 'vue'
+import { getOrderDetailAPI,getShopInfoByIdAPI } from '@/services/order'
+import { getAddressById } from '@/services/user'
+
+//获取传递过来的订单号
+const orderParam = defineProps({
+  storeOrderId: {
+    type: Number,
+    default: 0
+  }
+})
+const orderDetail = ref({})
+const merchantInfo = ref({})//商家信息
+const addressInfo = ref({})//地址信息
+
+// 获取订单详情
+const getOrderDetail = async () => {
+  console.log("获取过来的订单号是",orderParam.storeOrderId)
+  const res = await getOrderDetailAPI({orderId:orderParam.storeOrderId})
+  // const res = await getOrderDetailAPI(orderParam)
+  console.log("获取订单详情",res.data)
+  orderDetail.value = res.data
+  console.log("订单详情",orderDetail.value)
+}
+
+const getShopInfo = async () => {
+  console.log("传入参数是",orderDetail.value.shopId)
+  const res = await getShopInfoByIdAPI(orderDetail.value.shopId)
+  console.log("获取商家信息",res.data)
+  merchantInfo.value = res.data
+  console.log("商家信息",merchantInfo.value)
+}
+
+const getAddressInfo = async () => {
+  console.log("传入参数是",orderDetail.value.addressId)
+ const res = await getAddressById({addressId:orderDetail.value.addressId})
+  console.log("获取地址信息",res.data)
+  addressInfo.value = res.data
+  console.log("地址信息",addressInfo.value)
+}
+onMounted( async () => {
+  await getOrderDetail()
+  await getShopInfo()
+  await getAddressInfo()
+})
+
+// 商家信息
+// const merchantInfo = ref({
+//   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPr2b0qh2WuqDyI-zHYpsFiAl-gLlpomorWVFcFRcFlpYD4t9zC6NNInUI7fmUSnOnzNqkzfl9LwTsJ9A2Pha1hYEHvqBE2HDTWmx0otrWRZGjWdcsyqsu1NHFidBUowfE_a227_QU3KHQZY3E9wUn1FZj7_9r4WSaIvU-3LafyPEKWgYkv6VKy1jzL5dCTXsejfpMVeuue-CDxoocSw4oy5FKpR_uf_4nSM7YqSzSrnsjh8v6untBaDPvWOOavWYT2PI1NkN2bg',
+//   name: '上门帮·专业家政',
+//   phone: '400-888-9999',
+//   address: '朝阳区建国路88号华贸中心写字楼'
+// })
+
+// 地址信息
+// const addressInfo = ref({
+//   name: '李晓华',
+//   phoneMask: '138 **** 5678',
+//   fullAddress: '北京市朝阳区三里屯街道幸福二村 4号楼 2单元 1201室'
+// })
+
+// 服务信息
+// const serviceInfo = ref({
+//   image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-7i6RfXw-o1BfJrGfPNsfO19zLO8izgy7uNb9r-UP01lNIPyp3mXLR6rvR2012Awn-Xx3mczkSgK-vMemNrNnMzCh2jo6NBP21Wz5HkiDCXKjgyxuYo0hHnqs-CT8EdUpU-6FxRQdU8kqrTPJGaRsTYXJiBh9vOoE3UIyCcs6bnbI4SjsbM8oqDBbwED9Ace-y5TSNA6enZEDc9nAKfJLdccFWfOulhcJJLLuN8TfA8XS0msEJHuDBOseHmHxNrO-__QT3zgwqA',
+//   name: '深度保洁服务 (3小时)',
+//   tag: '日常清洁 · 全屋除尘',
+//   orderNo: 'SH202310240089',
+//   serviceTime: '2023-10-25 14:00 - 17:00',
+//   originalPrice: '350.00',
+//   finalPrice: '299'
+// })
+
+// 备注信息
+const remark = ref('')
+
+// 支付方式: 'wechat' 或 'alipay'
+const selectedPayMethod = ref('wechat')
+
+// 总金额
+// const totalAmount = ref('299.00')
+
+// 返回上一页
+const handleBack = () => {
+  uni.navigateBack({
+    fail: () => {
+      uni.showToast({
+        title: '暂无上一页',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+// 切换地址
+const handleSwitchAddress = () => {
+  uni.showToast({
+    title: '地址选择功能开发中',
+    icon: 'none'
+  })
+}
+
+// 联系商家 (拨打电话)
+const handleCallMerchant = () => {
+  uni.makePhoneCall({
+    phoneNumber: merchantInfo.value.phone,
+    fail: () => {
+      uni.showToast({
+        title: '拨号失败',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+// 更多支付方式
+const handleMorePayMethods = () => {
+  uni.showToast({
+    title: '更多支付方式即将上线',
+    icon: 'none'
+  })
+}
+
+// 选择支付方式
+const handleSelectPayMethod = (method) => {
+  selectedPayMethod.value = method
+}
+
+// 立即支付
+const handlePay = () => {
+  const methodName = selectedPayMethod.value === 'wechat' ? '微信支付' : '支付宝'
+  uni.showModal({
+    title: '确认支付',
+    content: `使用${methodName}支付 ¥${orderDetail.value.totalAmount}\n备注：${remark.value || '无'}`,
+    confirmText: '去支付',
+    success: (res) => {
+      if (res.confirm) {
+        uni.showToast({
+          title: `调用${methodName}支付 (演示)`,
+          icon: 'none'
+        })
+        // 实际开发中，此处调用支付接口
+        // 例如： uni.requestPayment({ ... })
+      }
+    }
+  })
+}
+</script>
 <template>
   <view class="order-confirm-page">
     <!-- 自定义导航栏 (隐藏原生导航栏需在pages.json中配置 "navigationStyle": "custom") -->
@@ -16,20 +164,20 @@
       <!-- 商家信息卡片 -->
       <view class="info-card merchant-card">
         <view class="merchant-avatar">
-          <image class="avatar-img" :src="merchantInfo.avatar" mode="aspectFill"></image>
+          <image class="avatar-img" :src="merchantInfo.shopLogo" mode="aspectFill"></image>
         </view>
         <view class="merchant-details">
           <view class="merchant-name-row">
-            <text class="merchant-name">{{ merchantInfo.name }}</text>
+            <text class="merchant-name">{{ merchantInfo.shopName }}</text>
             <text class="verified-icon">✓</text>
           </view>
           <view class="contact-row" @tap="handleCallMerchant">
             <text class="contact-icon">📞</text>
-            <text class="contact-text">{{ merchantInfo.phone }}</text>
+            <text class="contact-text">{{ merchantInfo.ownerPhone }}</text>
           </view>
           <view class="address-row">
             <text class="address-icon">📍</text>
-            <text class="address-text">{{ merchantInfo.address }}</text>
+            <text class="address-text">{{ merchantInfo.province }} {{ merchantInfo.city }} {{ merchantInfo.district }} {{ merchantInfo.detail_address }}</text>
           </view>
         </view>
       </view>
@@ -48,37 +196,37 @@
         </view>
         <view class="address-body">
           <view class="user-name-row">
-            <text class="user-name">{{ addressInfo.name }}</text>
-            <text class="user-phone">{{ addressInfo.phoneMask }}</text>
+            <text class="user-name">{{ addressInfo.contactName }}</text>
+            <text class="user-phone">{{ addressInfo.contactPhone }}</text>
           </view>
-          <text class="full-address">{{ addressInfo.fullAddress }}</text>
+          <text class="full-address">{{ addressInfo.province }}  {{ addressInfo.city }} {{ addressInfo.district }} {{ addressInfo.detailAddress }}</text>
         </view>
       </view>
 
       <!-- 服务信息卡片 -->
       <view class="info-card service-card">
         <view class="service-header">
-          <image class="service-img" :src="serviceInfo.image" mode="aspectFill"></image>
+          <image class="service-img" :src="orderDetail.coverImage" mode="aspectFill"></image>
           <view class="service-intro">
-            <text class="service-name">{{ serviceInfo.name }}</text>
-            <view class="service-tag">{{ serviceInfo.tag }}</view>
-            <text class="service-order-no">订单编号：{{ serviceInfo.orderNo }}</text>
+            <text class="service-name">{{ orderDetail.goodsName }}</text>
+            <view class="service-tag">{{ orderDetail.skuName }}</view>
+            <text class="service-order-no">订单编号：{{ orderDetail.orderNo }}</text>
           </view>
         </view>
         <view class="service-details">
           <view class="detail-item">
             <text class="detail-label">预约时间</text>
-            <text class="detail-value">{{ serviceInfo.serviceTime }}</text>
+            <text class="detail-value">{{ orderDetail.appointmentTime }}</text>
           </view>
           <view class="detail-item">
             <text class="detail-label">订单原价</text>
-            <text class="detail-value origin-price">¥{{ serviceInfo.originalPrice }}</text>
+            <text class="detail-value origin-price">¥{{ orderDetail.totalAmount }}</text>
           </view>
           <view class="detail-item final-price-row">
             <text class="detail-label final-label">实付金额</text>
             <view class="final-price">
               <text class="currency-symbol">¥</text>
-              <text class="price-number">{{ serviceInfo.finalPrice }}</text>
+              <text class="price-number">{{ orderDetail.totalAmount }}</text>
               <text class="decimal">.00</text>
             </view>
           </view>
@@ -136,7 +284,7 @@
         <view class="pay-action-bar">
           <view class="total-amount">
             <text class="total-label">合计待支付</text>
-            <text class="total-price">¥ {{ totalAmount }}</text>
+            <text class="total-price">¥ {{ orderDetail.totalAmount }}</text>
           </view>
           <view class="confirm-pay-btn" hover-class="pay-btn-hover" @tap="handlePay">
             <text class="pay-btn-text">立即支付</text>
@@ -149,110 +297,7 @@
   </view>
 </template>
 
-<script setup>
-import { ref } from 'vue'
 
-// 商家信息
-const merchantInfo = ref({
-  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPr2b0qh2WuqDyI-zHYpsFiAl-gLlpomorWVFcFRcFlpYD4t9zC6NNInUI7fmUSnOnzNqkzfl9LwTsJ9A2Pha1hYEHvqBE2HDTWmx0otrWRZGjWdcsyqsu1NHFidBUowfE_a227_QU3KHQZY3E9wUn1FZj7_9r4WSaIvU-3LafyPEKWgYkv6VKy1jzL5dCTXsejfpMVeuue-CDxoocSw4oy5FKpR_uf_4nSM7YqSzSrnsjh8v6untBaDPvWOOavWYT2PI1NkN2bg',
-  name: '上门帮·专业家政',
-  phone: '400-888-9999',
-  address: '朝阳区建国路88号华贸中心写字楼'
-})
-
-// 地址信息
-const addressInfo = ref({
-  name: '李晓华',
-  phoneMask: '138 **** 5678',
-  fullAddress: '北京市朝阳区三里屯街道幸福二村 4号楼 2单元 1201室'
-})
-
-// 服务信息
-const serviceInfo = ref({
-  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-7i6RfXw-o1BfJrGfPNsfO19zLO8izgy7uNb9r-UP01lNIPyp3mXLR6rvR2012Awn-Xx3mczkSgK-vMemNrNnMzCh2jo6NBP21Wz5HkiDCXKjgyxuYo0hHnqs-CT8EdUpU-6FxRQdU8kqrTPJGaRsTYXJiBh9vOoE3UIyCcs6bnbI4SjsbM8oqDBbwED9Ace-y5TSNA6enZEDc9nAKfJLdccFWfOulhcJJLLuN8TfA8XS0msEJHuDBOseHmHxNrO-__QT3zgwqA',
-  name: '深度保洁服务 (3小时)',
-  tag: '日常清洁 · 全屋除尘',
-  orderNo: 'SH202310240089',
-  serviceTime: '2023-10-25 14:00 - 17:00',
-  originalPrice: '350.00',
-  finalPrice: '299'
-})
-
-// 备注信息
-const remark = ref('')
-
-// 支付方式: 'wechat' 或 'alipay'
-const selectedPayMethod = ref('wechat')
-
-// 总金额
-const totalAmount = ref('299.00')
-
-// 返回上一页
-const handleBack = () => {
-  uni.navigateBack({
-    fail: () => {
-      uni.showToast({
-        title: '暂无上一页',
-        icon: 'none'
-      })
-    }
-  })
-}
-
-// 切换地址
-const handleSwitchAddress = () => {
-  uni.showToast({
-    title: '地址选择功能开发中',
-    icon: 'none'
-  })
-}
-
-// 联系商家 (拨打电话)
-const handleCallMerchant = () => {
-  uni.makePhoneCall({
-    phoneNumber: merchantInfo.value.phone,
-    fail: () => {
-      uni.showToast({
-        title: '拨号失败',
-        icon: 'none'
-      })
-    }
-  })
-}
-
-// 更多支付方式
-const handleMorePayMethods = () => {
-  uni.showToast({
-    title: '更多支付方式即将上线',
-    icon: 'none'
-  })
-}
-
-// 选择支付方式
-const handleSelectPayMethod = (method) => {
-  selectedPayMethod.value = method
-}
-
-// 立即支付
-const handlePay = () => {
-  const methodName = selectedPayMethod.value === 'wechat' ? '微信支付' : '支付宝'
-  uni.showModal({
-    title: '确认支付',
-    content: `使用${methodName}支付 ¥${totalAmount.value}\n备注：${remark.value || '无'}`,
-    confirmText: '去支付',
-    success: (res) => {
-      if (res.confirm) {
-        uni.showToast({
-          title: `调用${methodName}支付 (演示)`,
-          icon: 'none'
-        })
-        // 实际开发中，此处调用支付接口
-        // 例如： uni.requestPayment({ ... })
-      }
-    }
-  })
-}
-</script>
 
 <style scoped>
 /* 页面整体 */

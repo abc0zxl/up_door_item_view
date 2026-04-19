@@ -20,4 +20,19 @@ export const createOrderAPI = (params) => {
     })
 }
 
+export const getOrderDetailAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/order/getOrderById',
+        data:{
+            ...params
+        }
+    })
+}
 
+export const getShopInfoByIdAPI = (shopId) => {
+    return http({
+        method:'Get',
+        url:'/client/order/getShopById?shopId='+shopId,
+    })
+}
