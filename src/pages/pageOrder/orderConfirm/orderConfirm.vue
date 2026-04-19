@@ -1,38 +1,163 @@
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted,watch,computed } from 'vue'
+import { getAddressById } from '@/services/user'
+import { getOrderConfirmAPI } from '@/services/order'
+import { useAddress } from '@/stores/modules/addressStore'
+
+
+
+const serviceInfo = ref({})  //订单信息，商家信息，服务信息
+const addressInfo = ref({})  //地址信息
+// const addressId = ref({})
+// const changeAddressId = {
+//   addressId
+// }  //修改地址id，这个不影响
+// const DefaultAddressFlag = ref(true)  //启用默认地址
+const addressParam = {
+  userId: 10001,
+  defaultAddressId: 20017
+}
+// const addressStore = useAddress()
+//识别地址id
+// const getAddressId = computed(() => {
+//   return addressStore.selectedAddress || addressParam.userId
+// })
+//会自动更新
+const addressStore = useAddress()
+const addressId2 = ref({}) //用于监听地址id变化
+const addressId = computed(() => {
+  console.log("computed到addressStore发生变化",addressStore.selectedAddress)
+  const id = addressStore.selectedAddress || addressParam.defaultAddressId
+  addressId2.value = id
+  return id
+})
+// console.log("查看pinia内容",useAddress().selectedAddress)
+//   console.log("更新到id",addressId.value)
+//直接用watch监听上面的id
+watch(() => addressStore.selectedAddress, (newVal) => {
+  console.log("=== Pinia 变化监听 ===")
+  console.log("新的 selectedAddress:", newVal)
+  console.log("类型:", typeof newVal)
+}, {immediate: true})
+//监听地址id变化，获取地址信息
+watch(() => addressStore.selectedAddress, async (newId) => {
+      console.log("开始查询地址",newId)
+
+  if(!newId) 
+  newId = addressParam.defaultAddressId
+  try{
+
+    const res = await getAddressById({addressId:newId})
+    addressInfo.value = res.data
+    console.log("获得地址",addressInfo.value)
+  }catch(err){
+    console.log("获取地址失败",err)
+  }
+},{immediate: true}
+)
+
+//刷新地址信息
+const getAddressInfo = computed(() => {
+  return addressInfo.value
+})
+// const getAddressInfo = computed(() => {
+//   addressId.value = addressStore.selectedAddress || addressParam.userId
+//   const res = getAddressByUserAPI(addressId.value)
+//   addressInfo.value = res.data
+//   console.log("获得地址",addressInfo.value)
+//   return addressInfo.value
+// })
+
+const getOrderParam = {
+  goodsId: 100001,
+  quantity: 2,
+  appointmentTime: "2026-04-18 17:12",
+  skuId: 200001,
+  token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1Njc1NjEsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.DkHfZ6M5FSu6T_lDYZVktL1GCu6XRBt6R4R-NbgMuls"
+}
+// const orderParam = {
+//   orderNo: serviceInfo.value.orderNo,
+//   orderStatus:"CreateOrder",
+//   goodsId: serviceInfo.value.goodsId,
+//   quantity: serviceInfo.value.quantity,
+//   appointmentTime: serviceInfo.value.serviceTime,
+//   skuId: serviceInfo.value.skuId,
+//   shopId: serviceInfo.value.shopId,
+//   addressId:20017,
+//   registerTime: "2024-05-20 14:00",
+//   token:"fsdafsafadsfwe"
+// }
+
+const getOrderComfirmInfo = async () => {
+  const res= await getOrderConfirmAPI(getOrderParam)
+  serviceInfo.value = res.data
+    console.log(serviceInfo.value)
+
+}
+
+// const getAddressInfo = async () => {
+//   const res = await getAddressByUserAPI(addressParam)
+
+//   // if(DefaultAddressFlag.value)
+//   addressInfo.value = res.data
+
+//   // console.log("是否启用默认地址",DefaultAddressFlag.value)
+//   console.log(addressInfo.value)
+// }
+
+onMounted(() => {
+  getOrderComfirmInfo()
+  // getAddressInfo()
+}
+)
+
 
 // 地址信息
-const addressInfo = ref({
-  name: '张先生',
-  phoneMask: '138 **** 8888',
-  detail: '上海市静安区南京西路1266号\n恒隆广场写字楼1期 2503室'
-})
+// const addressInfo = ref({
+//   name: '张先生',
+//   phoneMask: '138 **** 8888',
+//   detail: '上海市静安区南京西路1266号\n恒隆广场写字楼1期 2503室'
+// })
 
 // 商家信息
-const merchantInfo = ref({
-  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA',
-  name: '悦享家政上海旗舰店',
-  address: '上海市黄浦区中山东一路18号'
-})
+// const merchantInfo = ref({
+//   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA',
+//   name: '悦享家政上海旗舰店',
+//   address: '上海市黄浦区中山东一路18号'
+// })
 
 // 服务信息
-const serviceInfo = ref({
-  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ',
-  name: '全屋深度保洁 4小时',
-  description: '专业深度除尘除菌',
-  category: '家庭保洁 / 深度保洁',
-  serviceTime: '2024年05月20日 14:00',
-  orderNo: 'SH202405208892',
-  totalPrice: '299'
-})
+// const serviceInfo = ref({
+//   image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ',
+//   name: '全屋深度保洁 4小时',
+//   description: '专业深度除尘除菌',
+//   category: '家庭保洁 / 深度保洁',
+//   serviceTime: '2024年05月20日 14:00',
+//   orderNo: 'SH202405208892',
+//   totalPrice: '299'
+// })
+
+//合并了商家和服务，最终要赋值的变量
+// const serviceInfo = ref({
+//   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBogs00Qi9KsxkqkQFoucqPW9KQWtmNaw5ggWWA71l9yVFP4CxzTKVTMYKI2sDcSRsRC5sA5GsP5k3SErRU1x9mKnllBmapUrqEZhRaa74Py948VeX9NXTjmsX2m6ZiGs5oAR2bXfOUrRuGKNfFoULjm-l6lDFcAjS7pBMbU3qF8V_muyJvYB_Jqii_qrtUnPFZQLD_B0tmSNDyQ7jPo7XE-xfhnqh_7HeOeCLidvKBnDrxqDb-o_qhmjqBT8hRGD-LgNhjtLMxVA',
+//   name: '悦享家政上海旗舰店',
+//   address: '上海市黄浦区中山东一路18号',
+//   image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJFdaX_e33pz31k6GpJ3OvJQm1SkKNpR_rjElyCda12sv_F6mUILbZsWfowZUPyzKzwkXWN-NcT357KzFpPr99xf5Haa-UH5Nmoqv7zOmEsQnxIwtqJIxY4-Knr1i6rVbC9s0fzGT6uVxyoMUIXG1zeKLsSBRIkLV2wmuW6jTSe5xPdkWUig2M06dIGXt0fxLJnIHZFVKrCY6Zyc88-emTLGSDDqEPgExDVEOnwhpKqbw37H0I3thPDFkrY03-p8lxQe_R_qjQ',
+//   name: '全屋深度保洁 4小时',
+//   description: '专业深度除尘除菌',
+//   category: '家庭保洁 / 深度保洁',
+//   serviceTime: '2024年05月20日 14:00',
+//   orderNo: 'SH202405208892',
+//   totalPrice: '299'
+// })
 
 // 用户信息
-const userInfo = ref({
-  name: '预订人姓名',
-  phoneMask: '138 **** 8888'
-})
-
+// const userInfo = ref({
+//   name: '预订人姓名',
+//   phoneMask: '138 **** 8888'
+// })
+// addressId
 // 返回上一页
 const handleBack = () => {
   uni.navigateBack({
@@ -51,7 +176,9 @@ const handleModifyAddress = () => {
 //     title: '地址修改功能开发中',
 //     icon: 'none'
 //   })
-  uni.navigateTo({ url: '/pagesMember/address/address' })
+  uni.navigateTo({ 
+    url: '/pagesMember/address/address?userId='+addressParam.userId,
+   })
 }
 
 // 联系商家
@@ -68,18 +195,18 @@ const handleCallMerchant = () => {
 }
 
 // 编辑用户信息
-const handleEditUser = () => {
-  uni.showToast({
-    title: '编辑个人信息',
-    icon: 'none'
-  })
-}
+// const handleEditUser = () => {
+//   uni.showToast({
+//     title: '编辑个人信息',
+//     icon: 'none'
+//   })
+// }
 
 // 确认支付
 const handlePay = () => {
   uni.showModal({
     title: '确认支付',
-    content: `订单金额：¥${serviceInfo.value.totalPrice}`,
+    content: `订单金额：¥${serviceInfo.value.totalAmount}`,
     confirmText: '去支付',
     success: (res) => {
       if (res.confirm) {
@@ -114,10 +241,10 @@ const handlePay = () => {
       <view class="info-card address-card">
         <view class="address-info">
           <view class="user-info-row">
-            <text class="user-name">{{ addressInfo.name }}</text>
-            <text class="user-phone">{{ addressInfo.phoneMask }}</text>
+            <text class="user-name">{{ addressInfo.contactName }}</text>
+            <text class="user-phone">{{ addressInfo.contactPhone }}</text>
           </view>
-          <text class="address-detail">{{ addressInfo.detail }}</text>
+          <text class="address-detail">{{ addressInfo.province }} {{ addressInfo.city }} {{ addressInfo.district }} {{ addressInfo.address }}</text>
         </view>
         <view class="modify-btn" @tap="handleModifyAddress">
           <text class="modify-text">修改地址</text>
@@ -128,10 +255,10 @@ const handlePay = () => {
       <!-- 商家信息卡片 -->
       <view class="info-card merchant-card">
         <view class="merchant-info">
-          <image class="merchant-avatar" :src="merchantInfo.avatar" mode="aspectFill"></image>
+          <image class="merchant-avatar" :src="serviceInfo.shopLogo" mode="aspectFill"></image>
           <view class="merchant-details">
-            <text class="merchant-name">{{ merchantInfo.name }}</text>
-            <text class="merchant-address">{{ merchantInfo.address }}</text>
+            <text class="merchant-name">{{ serviceInfo.shopName }}</text>
+            <text class="merchant-address">{{ serviceInfo.province }} {{ serviceInfo.city }} {{ serviceInfo.district }} {{ serviceInfo.address }}</text>
           </view>
           <view class="call-btn" @tap="handleCallMerchant">
             <text class="icon-text">📞</text>
@@ -142,20 +269,24 @@ const handlePay = () => {
       <!-- 服务信息卡片 -->
       <view class="info-card service-card">
         <view class="service-header">
-          <image class="service-img" :src="serviceInfo.image" mode="aspectFill"></image>
+          <image class="service-img" :src="serviceInfo.coverImage" mode="aspectFill"></image>
           <view class="service-intro">
-            <text class="service-name">{{ serviceInfo.name }}</text>
-            <text class="service-desc">{{ serviceInfo.description }}</text>
+            <text class="service-name">{{ serviceInfo.goodsName }}</text>
+            <text class="service-desc">{{ serviceInfo.goodsDescription }}</text>
           </view>
         </view>
         <view class="service-details">
           <view class="detail-row">
             <text class="detail-label">服务类别</text>
-            <text class="detail-value">{{ serviceInfo.category }}</text>
+            <text class="detail-value">{{ serviceInfo.categoryName }}/{{ serviceInfo.serviceName }}</text>
+          </view>
+          <view class="detail-row">
+            <text class="detail-label">服务类型</text>
+            <text class="detail-value">{{ serviceInfo.skuName }}</text>
           </view>
           <view class="detail-row">
             <text class="detail-label">服务时间</text>
-            <text class="detail-value">{{ serviceInfo.serviceTime }}</text>
+            <text class="detail-value">{{ serviceInfo.appointmentTime }}</text>
           </view>
           <view class="detail-row">
             <text class="detail-label">订单编号</text>
@@ -166,13 +297,13 @@ const handlePay = () => {
           <text class="price-label">订单总计</text>
           <view class="price-value">
             <text class="currency">¥</text>
-            <text class="price-number">{{ serviceInfo.totalPrice }}</text>
+            <text class="price-number">{{ serviceInfo.totalAmount }}</text>
           </view>
         </view>
       </view>
 
       <!-- 用户信息卡片 -->
-      <view class="info-card user-card">
+      <!-- <view class="info-card user-card">
         <view class="user-avatar">
           <text class="icon-text large">👤</text>
         </view>
@@ -186,7 +317,7 @@ const handlePay = () => {
         <view class="edit-btn" @tap="handleEditUser">
           <text class="icon-text">✎</text>
         </view>
-      </view>
+      </view> -->
 
       <!-- 底部占位，防止内容被固定按钮遮挡 -->
       <view class="bottom-placeholder"></view>

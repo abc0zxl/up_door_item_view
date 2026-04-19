@@ -1,6 +1,8 @@
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getAddressListByUserAPI } from '@/services/user'
+import { useAddress } from '@/stores/modules/addressStore'
 
 // 用户头像图片（使用原 HTML 中的图片）
 const userAvatar = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuBUSpn1yYaIzS5a8YTWxhCDRvqfcJxXEN5RMiINPuwY8nG5sdw3IlxjqYD0hf-nJGwk3j4z44ziq6IEwe2xOwja727TdidXu3LorQ8S6F-eup57xeqFNffUCIXroaSeRAB9lAQ13u_MXGXquhojlPPUbcpcu6txk4EW6hmWasziXPDdhgt4yNLaarA79b1qqpASYl31UxBIe1ycB1kAi1e6F2lhwbIOxD72tZeKrpmYSwn-mlGVlZQs5103yYRCRhMcyhs24ekrnA')
@@ -9,31 +11,75 @@ const userAvatar = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuBUSp
 const mapImage = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuAfC562r2J36hw7WS4mgJzpNoKarHYb6uEcr7oYKSL1jPNpjqcWs15ikjw4ynkRPz1Pm4aFIdht3kiPi6pqrYeXOCgSgIkkp9gEDwLXysWyl4YnwzVyXQ0Ex0hrSgFWJX55e2DS3dewcbU-uWT8c7K_HDAUpTXvsZRaJaSmZhQONo304LZ56wE6bF0cbgTaSk4LDO0Aqodi6zXYa2gX-wfDcnf3ySwNZz50clMyZERWGsatOQsQmRp_gTMkd2uUSBPt9sYiMKQm2A')
 
 // 地址列表数据
-const addressList = ref([
-  {
-    id: 1,
-    name: '张伟杰',
-    phoneMask: '138 **** 5678',
-    detail: '北京市朝阳区三里屯街道幸福二村 4号楼 3单元 602室',
-    isDefault: true
-  },
-  {
-    id: 2,
-    name: '李美玲',
-    phoneMask: '155 **** 0092',
-    detail: '上海市徐汇区田林路 140号 越界创意园区 2号楼 105室',
-    isDefault: false
-  },
-  {
-    id: 3,
-    name: '王小明',
-    phoneMask: '130 **** 1234',
-    detail: '广东省深圳市南山区粤海街道 软件产业基地 5栋 D座 12层',
-    isDefault: false
-  }
-])
+
+const addressList = ref({})
+// const addressList = ref([
+//   {
+//     id: 1,
+//     name: '张伟杰',
+//     phoneMask: '138 **** 5678',
+//     detail: '北京市朝阳区三里屯街道幸福二村 4号楼 3单元 602室',
+//     isDefault: true
+//   },
+//   {
+//     id: 2,
+//     name: '李美玲',
+//     phoneMask: '155 **** 0092',
+//     detail: '上海市徐汇区田林路 140号 越界创意园区 2号楼 105室',
+//     isDefault: false
+//   },
+//   {
+//     id: 3,
+//     name: '王小明',
+//     phoneMask: '130 **** 1234',
+//     detail: '广东省深圳市南山区粤海街道 软件产业基地 5栋 D座 12层',
+//     isDefault: false
+//   }
+// ])
 
 // 返回上一页
+
+  // addressUser.userId = option.userId
+  // console.log("地址页面获取到的userId是",addressUser.userId)
+
+const TransParam = defineProps({
+  userId: {
+    type:Number,
+    default:0
+  }
+})  
+const addressStore = useAddress()
+
+const getAddressListByUserId = async (param) => {
+  console.log("接收到的参数是",param)
+  const res = await getAddressListByUserAPI({
+    userId:param
+  })
+  addressList.value = res.data
+  console.log("获取到的地址列表是",res.data)
+  console.log("获取到的地址列表是",addressList.value)
+}
+
+onMounted(() => {
+  getAddressListByUserId(TransParam.userId)
+})
+const handleSelectAddress = (item) => {
+  uni.showToast({
+    title: `已选择地址：${item.contactName} ${item.contactPhone}\n${item.province} ${item.city} ${item.district} ${item.detailAddress}`,
+    icon: 'none'
+  })
+  console.log("这个item.id是",item.id)
+  addressStore.changeSelectedAddress(item.id)
+  console.log("完成修改,修改后id为",addressStore.id)
+  uni.navigateBack({
+  })
+}
+
+
+
+
+
+
 const handleBack = () => {
   uni.navigateBack({
     fail: () => {
@@ -111,13 +157,14 @@ const handleAddAddress = () => {
           class="address-card"
           :class="{ 'address-card-default': item.isDefault }"
           hover-class="address-card-hover"
+          @tap="handleSelectAddress(item)"
         >
           <view class="address-info">
             <view class="user-info">
-              <text class="user-name">{{ item.name }}</text>
-              <text class="user-phone">{{ item.phoneMask }}</text>
+              <text class="user-name">{{ item.contactName }}</text>
+              <text class="user-phone">{{ item.contactPhone }}</text>
             </view>
-            <text class="address-detail">{{ item.detail }}</text>
+            <text class="address-detail">{{ item.province }} {{ item.city }} {{ item.district }} {{ item.detailAddress }}</text>
           </view>
           <view class="card-actions">
             <view class="edit-btn" @tap.stop="handleEditAddress(item)">
