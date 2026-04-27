@@ -36,6 +36,13 @@ const navigateToCategoryList = (value,title) =>{
     url: '/pages/categoryList/categoryList?cateId='+value+'&title='+title
   })
 }
+
+
+const goToBrowserPage = () => {
+  uni.navigateTo({
+    url: '/pagesMember/browser/browser'
+  })
+}
 </script> 
 
 <template>
@@ -133,8 +140,13 @@ const navigateToCategoryList = (value,title) =>{
       <view class="promo-btn">立即领取</view>
       <view class="promo-circle"></view>
     </view>
+      <view>
+    <!-- 在现有页面中添加一个按钮 -->
+    <button @click="goToBrowserPage">测试跳转浏览器功能</button>
+  </view>
       </view>
   </view>
+  
 
 </template>
 

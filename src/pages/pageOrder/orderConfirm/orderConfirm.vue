@@ -4,13 +4,14 @@ import { ref,onMounted,watch,computed } from 'vue'
 import { getAddressById } from '@/services/user'
 import { getOrderConfirmAPI,createOrderAPI } from '@/services/order'
 import { useAddress } from '@/stores/modules/addressStore'
-
+import { useMemberStore } from '@/stores/modules/member'
 
 
 
 const serviceInfo = ref({})  //订单信息，商家信息，服务信息
 const addressInfo = ref({})  //地址信息
 const storeOrderId = ref({})  //订单id
+const userInfo = useMemberStore() //获取会员信息
 // const addressId = ref({})
 // const changeAddressId = {
 //   addressId
@@ -76,8 +77,8 @@ const getOrderParam = {
   quantity: 2,
   appointmentTime: "2026-04-18 17:12",
   skuId: 200001,
-    token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1OTA3MDYsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.fjACR1feqbk8PX4CJjrCfYeTXyTNYN8bOaO7OUAbGyo"
-}
+    token: userInfo.profile.token,
+  }
 
 
 // 封装一个格式化当前时间的函数
@@ -97,6 +98,7 @@ function formatCurrentDateTime() {
 }
 
 const getOrderComfirmInfo = async () => {
+  console.log("开始发送参数",getOrderParam)
   const res= await getOrderConfirmAPI(getOrderParam)
   serviceInfo.value = res.data
     console.log("获取订单确认信息",serviceInfo.value)
@@ -227,8 +229,8 @@ const handlePay = () => {
   skuId: serviceInfo.value.skuId,
   addressId:addressId.value,
   registerTime: formatCurrentDateTime(),
-    token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NzY1OTA3MDYsInVzZXJJZCI6MTAwMTIsInVzZXJuYW1lIjoi5bCPeiJ9.fjACR1feqbk8PX4CJjrCfYeTXyTNYN8bOaO7OUAbGyo"
-}
+    token: userInfo.profile.token,
+    }
         // uni.showToast({
         //   title: '支付功能演示',
         //   icon: 'none'
@@ -239,8 +241,12 @@ const handlePay = () => {
           console.log("开始查询订单状态")
           const res = await createOrderAPI(orderParam)
           console.log("创建订单后端返回结构",res)
-          storeOrderId.value = res.data.orderId
-          console.log("订单存储的id是",storeOrderId)
+          if( res.code == 200){
+            storeOrderId.value.orderId = res.data.orderId
+          }else{
+          storeOrderId.value.orderId = ""
+          }
+          console.log("订单存储的id是",storeOrderId.value.orderId)
 
           if( res.code == 409 ){
             uni.showToast({
@@ -252,7 +258,7 @@ const handlePay = () => {
               title: '下单成功，去支付',
               icon: 'success'
             })
-              uni.navigateTo({ url: '/pages/pageOrder/orderPay/orderPay?storeOrderId='+ storeOrderId.value })
+              uni.navigateTo({ url: '/pages/pageOrder/orderPay/orderPay?storeOrderId='+ storeOrderId.value.orderId })
 
           }else{
             uni.showToast({

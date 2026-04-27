@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>支付宝支付</title>
+    <style>
+        body { margin:0; display:flex; justify-content:center; align-items:center; min-height:100vh; background:#f5f5f5; font-family: system-ui; }
+        .loading { text-align:center; padding:20px; }
+        .spinner { width:40px; height:40px; margin:0 auto 15px; border:3px solid #e9ecef; border-top-color:#1677ff; border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .text { color:#666; font-size:14px; }
+    </style>
+</head>
+<body>
+    <div class="loading"><div class="spinner"></div><div class="text">正在跳转支付...</div></div>
+    <div id="formContainer" style="display:none;"></div>
+    <script>
+        // 1. 获取 URL 参数中的表单 HTML
+        function getFormHtmlFromUrl() {
+            var params = new URLSearchParams(window.location.search);
+            var encoded = params.get('formHtml');   // 注意参数名和 Vue 中传递的一致
+            console.log("获取过来的参数是",encoded);
+            if (!encoded) return null;
+            // 解码（因为前端用了 encodeURIComponent）
+            return decodeURIComponent(encoded);
+        }
+
+        var formHtml = getFormHtmlFromUrl();
+        if (formHtml) {
+            var container = document.getElementById('formContainer');
+            container.innerHTML = formHtml;
+            var form = container.querySelector('form');
+            if (form) {
+                console.log('找到表单，自动提交');
+                setTimeout(function() { form.submit(); }, 100);
+            } else {
+                document.body.innerHTML = '<div style="text-align:center;padding:20px;color:red;">未找到支付表单，请联系客服</div>';
+            }
+        } else {
+            document.body.innerHTML = '<div style="text-align:center;padding:20px;color:red;">支付参数缺失，请返回重试</div>';
+        }
+    </script>
+</body>
+</html>

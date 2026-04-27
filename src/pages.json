@@ -63,6 +63,12 @@
 			"style": {
 				"navigationBarTitleText": "分类列表"
 			}
+		},
+				{
+			"path": "pages/payReturn/callback",
+			"style": {
+				"navigationBarTitleText": "回调页面"
+			}
 		}
 	],
 	"globalStyle": {
@@ -177,7 +183,25 @@
 				"style": {
 					"navigationBarTitleText": "编辑资料"
 				}
-			}
+			},
+			{
+				"path": "payment/webview2",
+				"style": {
+					"navigationBarTitleText": "支付页面"
+				}
+			},
+			// {
+			// 	"path": "payment/webView3",
+			// 	"style": {
+			// 		"navigationBarTitleText": "支付页面2"
+			// 	}
+			// },
+			{
+  "path": "browser/browser",
+  "style": {
+    "navigationBarTitleText": "跳转浏览器"
+  }
+}
 		]
 	}	
 ]

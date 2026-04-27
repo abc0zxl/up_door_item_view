@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>支付宝支付</title>
+    <!-- 引入 vConsole 调试工具（仅在开发环境显示，可手动关闭） -->
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+            font-family: system-ui, -apple-system;
+        }
+        .message {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 80%;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            border: 3px solid #e9ecef;
+            border-top-color: #1677ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { color: #d32f2f; margin-top: 10px; word-break: break-all; }
+        .info { color: #2e7d32; margin-top: 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <div class="spinner"></div>
+        <div id="statusText">正在准备支付...</div>
+        <div id="debugInfo" class="info"></div>
+    </div>
+    <div id="formContainer" style="display:none;"></div>
+
+    <script>
+        // 初始化 vConsole（只在非生产环境或根据参数开启）
+        (function() {
+            // 如果 URL 中有 debug=1 参数则开启 vConsole，也可以默认开启
+            var urlParams = new URLSearchParams(window.location.search);
+            var debugMode = urlParams.get('debug') === '1' || true;  // 默认开启，方便调试
+            if (debugMode && typeof VConsole !== 'undefined') {
+                var vConsole = new VConsole();
+                console.log('vConsole 已启动，点击绿色按钮查看日志');
+            }
+        })();
+
+        // 显示调试信息（同时输出到 vConsole 和页面）
+        function log(msg) {
+            console.log('[AlipayForm]', msg);
+            var debugDiv = document.getElementById('debugInfo');
+            if (debugDiv) {
+                var span = document.createElement('div');
+                span.innerText = msg;
+                debugDiv.appendChild(span);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('statusText').innerHTML = '⚠️ ' + msg;
+            document.querySelector('.spinner').style.display = 'none';
+            log('错误：' + msg);
+        }
+
+        // 获取 URL 参数中的 formHtml
+        function getFormHtmlFromUrl() {
+            var params = new URLSearchParams(window.location.search);
+            var encoded = params.get('formHtml');
+            log('原始参数长度: ' + (encoded ? encoded.length : 0));
+            if (!encoded) {
+                showError('未找到 formHtml 参数');
+                return null;
+            }
+            try {
+                var decoded = decodeURIComponent(encoded);
+                log('解码后长度: ' + decoded.length);
+                return decoded;
+            } catch(e) {
+                showError('解码失败: ' + e.message);
+                return null;
+            }
+        }
+
+        var formHtml = getFormHtmlFromUrl();
+        if (!formHtml) return;
+
+        var container = document.getElementById('formContainer');
+        container.innerHTML = formHtml;
+        var form = container.querySelector('form');
+
+        if (!form) {
+            showError('未找到 <form> 标签');
+            log('HTML 前200字符: ' + formHtml.substring(0, 200));
+            return;
+        }
+
+        log('找到表单，action: ' + form.action);
+        setTimeout(function() {
+            try {
+                form.submit();
+                log('已调用 form.submit()，页面即将跳转...');
+            } catch(e) {
+                showError('表单提交失败: ' + e.message);
+            }
+        }, 100);
+    </script>
+</body>
+</html>

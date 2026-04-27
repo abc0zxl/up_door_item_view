@@ -13,7 +13,7 @@ import { useMemberStore } from "@/stores/modules/member"
 */
 
 //基础地址
-const baseURL = 'http://localhost:8080/api/v1'
+const baseURL = 'http://27ace2bd.r33.cpolar.top/api/v1'
 
 
 //添加拦截器

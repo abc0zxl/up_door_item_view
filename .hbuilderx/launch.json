@@ -1,0 +1,11 @@
+{
+    "version" : "1.0",
+    "configurations" : [
+        {
+            "customPlaygroundType" : "local",
+            "packageName" : "aaa",
+            "playground" : "custom",
+            "type" : "uni-app:app-android"
+        }
+    ]
+}

@@ -1,7 +1,10 @@
 <script setup>
 import { ref,onMounted } from 'vue'
-import { getOrderDetailAPI,getShopInfoByIdAPI } from '@/services/order'
+import { getOrderDetailAPI,getShopInfoByIdAPI,payOrderPhoneAPI } from '@/services/order'
 import { getAddressById } from '@/services/user'
+import { useMemberStore } from '@/stores/modules/member'
+import { usePayStore } from '@/stores/modules/pay'
+
 
 //获取传递过来的订单号
 const orderParam = defineProps({
@@ -13,7 +16,11 @@ const orderParam = defineProps({
 const orderDetail = ref({})
 const merchantInfo = ref({})//商家信息
 const addressInfo = ref({})//地址信息
+const userInfo = useMemberStore() //获取会员信息
+const PayParams = ref({})//中转参数
 
+const payResult = ref({})
+const PayPageParams = usePayStore()
 // 获取订单详情
 const getOrderDetail = async () => {
   console.log("获取过来的订单号是",orderParam.storeOrderId)
@@ -43,8 +50,26 @@ onMounted( async () => {
   await getOrderDetail()
   await getShopInfo()
   await getAddressInfo()
+  await preparePayParam()
 })
 
+// 改成函数，调用时才拿最新的 orderDetail
+const getPayParams = () => {
+  return {
+    id: orderParam.storeOrderId,
+    orderNo: orderDetail.value.orderNo,
+    userId: orderDetail.value.userId,
+    shopId: orderDetail.value.shopId,
+    goodsId: orderDetail.value.goodsId,
+    goodsName: orderDetail.value.goodsName,
+    token: userInfo.profile.token
+  }
+}
+
+const preparePayParam = async () => {
+  PayParams.value = getPayParams()
+  console.log("获取得到的参数是",PayParams.value)
+}
 // 商家信息
 // const merchantInfo = ref({
 //   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPr2b0qh2WuqDyI-zHYpsFiAl-gLlpomorWVFcFRcFlpYD4t9zC6NNInUI7fmUSnOnzNqkzfl9LwTsJ9A2Pha1hYEHvqBE2HDTWmx0otrWRZGjWdcsyqsu1NHFidBUowfE_a227_QU3KHQZY3E9wUn1FZj7_9r4WSaIvU-3LafyPEKWgYkv6VKy1jzL5dCTXsejfpMVeuue-CDxoocSw4oy5FKpR_uf_4nSM7YqSzSrnsjh8v6untBaDPvWOOavWYT2PI1NkN2bg',
@@ -127,24 +152,45 @@ const handleSelectPayMethod = (method) => {
 }
 
 // 立即支付
-const handlePay = () => {
+const handlePay =  ()  =>  {
   const methodName = selectedPayMethod.value === 'wechat' ? '微信支付' : '支付宝'
   uni.showModal({
     title: '确认支付',
     content: `使用${methodName}支付 ¥${orderDetail.value.totalAmount}\n备注：${remark.value || '无'}`,
     confirmText: '去支付',
-    success: (res) => {
+    success: async (res)  => {
       if (res.confirm) {
         uni.showToast({
           title: `调用${methodName}支付 (演示)`,
           icon: 'none'
+        }
+      )
+      console.log("开始支付,传过去的参数是",PayParams.value)
+      const result =  await payOrderPhoneAPI(PayParams.value);
+      console.log("支付后返回信息1是",result)
+
+      payResult.value = result.data
+      console.log("支付后返回信息2是",payResult.value)
+
+      // 保存支付结果到 store
+
+      PayPageParams.setProfile({
+        payHtml: encodeURIComponent(payResult.value)
+      })
+      console.log("保存到store的结果是",PayPageParams.profile.payHtml)
+      //触发跳转
+        uni.navigateTo({ 
+          // url: '/pagesMember/payment/webView3?payParams='+payResult.value
+          url: '/pagesMember/payment/webview2'
         })
-        // 实际开发中，此处调用支付接口
+        // 实际开发中，此处调用支付接口，用于唤起微信支付或者支付宝支付
         // 例如： uni.requestPayment({ ... })
       }
     }
   })
 }
+
+
 </script>
 <template>
   <view class="order-confirm-page">

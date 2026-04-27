@@ -1,7 +1,7 @@
 <script setup>
 import { ref,onMounted } from 'vue'
 import { getCategoryListAPI } from '@/services/catelog'
-import { indexNavber } from '@/components/indexNavber.vue'
+// import { indexNavber } from '@/components/indexNavber.vue'
 
 const ViceCategoryList = ref([])
 const getParam = defineProps({
