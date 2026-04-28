@@ -4,6 +4,7 @@ import { useMemberStore } from '@/stores/modules/member'
 import { getOrderDetailAPI,getShopInfoByIdAPI,payOrderPhoneAPI } from '@/services/order'
 import { getgoodsSkuAPI,getgoodsDetailAPI} from '@/services/goods'
 import { getAddressById } from '@/services/user'
+import { onBackPress } from '@dcloudio/uni-app'
 
 // 获取状态栏高度
 const statusBarHeight = ref(20)
@@ -109,6 +110,30 @@ const goToProfile = () => {
   uni.navigateTo({ url: '/pages/profile/profile' })
 }
 
+onBackPress((options) => {
+  console.log('系统返回键被按下', options)
+  
+  // 阻止默认返回行为
+  // 显示选择对话框
+  uni.showModal({
+    title: '提示',
+    content: '确定要返回首页吗？',
+    confirmText: '返回首页',
+    cancelText: '取消',
+    success: (res) => {
+      if (res.confirm) {
+        // 用户选择返回首页
+        uni.switchTab({
+          url: '/pages/index/index'
+        })
+      }
+      // 如果用户选择取消，什么都不做，保持当前页面
+    }
+  })
+  
+  // 返回true表示拦截默认返回行为
+  return true
+})
 // 复制订单号
 const copyOrderNo = () => {
   uni.setClipboardData({

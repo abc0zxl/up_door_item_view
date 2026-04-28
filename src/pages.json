@@ -190,6 +190,12 @@
 					"navigationBarTitleText": "支付页面"
 				}
 			},
+			{
+				"path":"payResult/paymentResult",
+				"style": {
+					"navigationBarTitleText": "支付结果"
+				}
+			},
 			// {
 			// 	"path": "payment/webView3",
 			// 	"style": {

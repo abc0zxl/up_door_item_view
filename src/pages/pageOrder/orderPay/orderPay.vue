@@ -19,6 +19,7 @@ const merchantInfo = ref({})//商家信息
 const addressInfo = ref({})//地址信息
 const userInfo = useMemberStore() //获取会员信息
 const PayParams = ref({})//中转参数
+const ResultPageReturn = ref(false)   //是否从支付结果页面返回
 
 const payResult = ref({})
 const PayPageParams = usePayStore()
@@ -222,7 +223,23 @@ onShow( async () => {
   
   // 检查支付状态（从支付页面返回时）
   // checkPaymentStatus()
-  
+    // 监听来自paymentResult的事件
+  uni.$on('fromPaymentResult', (data) => {
+    console.log('从paymentResult返回:', data)
+    ResultPageReturn.value = true   //标记为从支付结果页面返回
+    
+    // 显示提示
+    uni.showToast({
+      title: '继续支付订单',
+      icon: 'none',
+      duration: 2000
+    })
+    
+    // 或者执行特定逻辑，比如刷新支付状态
+    // checkPaymentStatus()
+  })
+
+
   uni.showToast({
     title: '支付成功',
     icon: 'none'
@@ -232,14 +249,27 @@ onShow( async () => {
   const getOrder = await getOrderDetailAPI({orderId:userInfo.profile.orderId})
   orderDetail.value = getOrder.data
   console.log("订单内容是:",getOrder.data)
-  if(orderDetail.value!=undefined)
+  if(orderDetail.value!=undefined && !ResultPageReturn.value)
   {
+
 	  console.log("再次查询订单状态:",orderDetail.value.orderStatus)
     uni.navigateTo({
-    url: '/pages/pageOrder/orderDetail/orderDetail'
+    url: '/pagesMember/payResult/paymentResult'
   })
   }
+  else{
+    ResultPageReturn.value = false
+  }
 
+})
+
+// 在orderPay.vue的onShow或onLoad中添加
+onShow(() => {
+})
+
+// 页面卸载时移除监听
+onUnload(() => {
+  uni.$off('fromPaymentResult')
 })
 
 onHide(() => {
