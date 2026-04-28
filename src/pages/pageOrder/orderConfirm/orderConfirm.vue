@@ -1,6 +1,7 @@
 
 <script setup>
 import { ref,onMounted,watch,computed } from 'vue'
+import { onShow, onReady, onHide, onUnload } from '@dcloudio/uni-app'
 import { getAddressById } from '@/services/user'
 import { getOrderConfirmAPI,createOrderAPI } from '@/services/order'
 import { useAddress } from '@/stores/modules/addressStore'
@@ -12,6 +13,7 @@ const serviceInfo = ref({})  //订单信息，商家信息，服务信息
 const addressInfo = ref({})  //地址信息
 const storeOrderId = ref({})  //订单id
 const userInfo = useMemberStore() //获取会员信息
+const flag = ref(true)
 // const addressId = ref({})
 // const changeAddressId = {
 //   addressId
@@ -278,6 +280,37 @@ const handlePay = () => {
     }
   })
 }
+
+
+
+
+onShow(() => {
+  console.log('🟢 [orderPay] onShow - 页面显示（包括返回时触发）')
+  console.log('🟢 [orderPay] 当前时间:', new Date().toLocaleString())
+  
+  // 检查支付状态（从支付页面返回时）
+  // checkPaymentStatus()
+  
+  uni.showToast({
+    title: '支付成功',
+    icon: 'none'
+  })
+  flag.value = !flag.value
+})
+
+onHide(() => {
+  console.log('🟡 [orderPay] onHide - 页面隐藏（跳转到支付页面时触发）')
+  console.log('🟡 [orderPay] 隐藏时间:', new Date().toLocaleString())
+})
+
+onReady(() => {
+  console.log('🔵 [orderPay] onReady - 页面初次渲染完成')
+})
+
+onUnload(() => {
+  console.log('🔴 [orderPay] onUnload - 页面卸载')
+  // 清理资源
+})
 </script>
 
 <template>
@@ -295,6 +328,9 @@ const handlePay = () => {
 
     <!-- 主内容区域 -->
     <scroll-view class="main-content" scroll-y enhanced :show-scrollbar="false">
+      <view v-if="flag" class = "aaa">
+        safsafasfasfasdfa
+      </view>
       <!-- 地址信息卡片 -->
       <view class="info-card address-card">
         <view class="address-info">

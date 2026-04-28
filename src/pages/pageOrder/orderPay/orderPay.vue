@@ -1,5 +1,6 @@
 <script setup>
 import { ref,onMounted } from 'vue'
+import { onLoad,onShow, onReady, onHide, onUnload } from '@dcloudio/uni-app'
 import { getOrderDetailAPI,getShopInfoByIdAPI,payOrderPhoneAPI } from '@/services/order'
 import { getAddressById } from '@/services/user'
 import { useMemberStore } from '@/stores/modules/member'
@@ -21,6 +22,10 @@ const PayParams = ref({})//中转参数
 
 const payResult = ref({})
 const PayPageParams = usePayStore()
+const flag1 = ref(true)
+const flag2 = ref(true)
+const flag3 = ref(true)
+const flag4 = ref(true)
 // 获取订单详情
 const getOrderDetail = async () => {
   console.log("获取过来的订单号是",orderParam.storeOrderId)
@@ -178,11 +183,25 @@ const handlePay =  ()  =>  {
         payHtml: encodeURIComponent(payResult.value)
       })
       console.log("保存到store的结果是",PayPageParams.profile.payHtml)
-      //触发跳转
-        uni.navigateTo({ 
-          // url: '/pagesMember/payment/webView3?payParams='+payResult.value
-          url: '/pagesMember/payment/webview2'
+      // 显示跳转提示
+        uni.showToast({
+          title: '即将跳转到支付页面',
+          icon: 'none',
+          duration: 1000
         })
+        
+        // 延迟跳转，让提示显示完整
+        setTimeout(() => {
+			userInfo.setProfile({
+				orderId:orderDetail.value.id
+			})
+          // 触发跳转到新的webview3支付页面
+          uni.navigateTo({ 
+            url: '/pagesMember/payment/webview2'
+          })
+		  
+        }, 1200)
+		
         // 实际开发中，此处调用支付接口，用于唤起微信支付或者支付宝支付
         // 例如： uni.requestPayment({ ... })
       }
@@ -190,6 +209,54 @@ const handlePay =  ()  =>  {
   })
 }
 
+// uniapp页面生命周期
+onLoad((options) => {
+  console.log('🔵 [orderPay] onLoad - 页面首次加载，参数:', options)
+  // 可以在这里处理页面初始化逻辑
+  flag1.value = !flag1.value
+})
+
+onShow( async () => {
+  console.log('🟢 [orderPay] onShow - 页面显示（包括返回时触发）')
+  console.log('🟢 [orderPay] 当前时间:', new Date().toLocaleString())
+  
+  // 检查支付状态（从支付页面返回时）
+  // checkPaymentStatus()
+  
+  uni.showToast({
+    title: '支付成功',
+    icon: 'none'
+  })
+  flag2.value = !flag2.value
+  console.log("开始查询订单状态",userInfo.profile.orderId)
+  const getOrder = await getOrderDetailAPI({orderId:userInfo.profile.orderId})
+  orderDetail.value = getOrder.data
+  console.log("订单内容是:",getOrder.data)
+  if(orderDetail.value!=undefined)
+  {
+	  console.log("再次查询订单状态:",orderDetail.value.orderStatus)
+    uni.navigateTo({
+    url: '/pages/pageOrder/orderDetail/orderDetail'
+  })
+  }
+
+})
+
+onHide(() => {
+  console.log('🟡 [orderPay] onHide - 页面隐藏（跳转到支付页面时触发）')
+  console.log('🟡 [orderPay] 隐藏时间:', new Date().toLocaleString())
+  flag3.value = !flag3.value
+})
+
+onReady(() => {
+  console.log('🔵 [orderPay] onReady - 页面初次渲染完成')
+})
+
+onUnload(() => {
+  console.log('🔴 [orderPay] onUnload - 页面卸载')
+  flag4.value = !flag4.value
+  // 清理资源
+})
 
 </script>
 <template>
@@ -207,6 +274,19 @@ const handlePay =  ()  =>  {
 
     <!-- 主内容区域 - 页面滚动 -->
     <scroll-view class="main-scroll" scroll-y enhanced :show-scrollbar="false">
+
+      <view v-if = "flag1" >
+        onshow触发成功
+      </view>
+            <view v-if = "flag2" >
+        onLoad触发成功
+      </view>
+                  <view v-if = "flag3" >
+        onunload触发成功
+      </view>
+                  <view v-if = "flag4" >
+        onhide触发成功
+      </view>
       <!-- 商家信息卡片 -->
       <view class="info-card merchant-card">
         <view class="merchant-avatar">

@@ -1,9 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-
+import { useMemberStore } from '@/stores/modules/member'
+import { getOrderDetailAPI,getShopInfoByIdAPI,payOrderPhoneAPI } from '@/services/order'
+import { getgoodsSkuAPI,getgoodsDetailAPI} from '@/services/goods'
+import { getAddressById } from '@/services/user'
 
 // 获取状态栏高度
 const statusBarHeight = ref(20)
+const memberStore = useMemberStore()
+const orderDetail = ref({}) // 订单详情
+const merchantInfo = ref({}) // 商家信息
+const addressInfo = ref({}) // 地址信息
+const goodsInfo = ref({}) // 商品信息
+const skuInfo = ref({}) // 商品规格信息
+const serviceInfo = ref({}) // 商品服务信息
+
+
 try {
   const systemInfo = uni.getSystemInfoSync()
   statusBarHeight.value = systemInfo.statusBarHeight || 20
@@ -18,6 +30,79 @@ const handleBack = () => {
     }
   })
 }
+
+const getOrderDetail = async () => {
+  console.log("获取过来的订单号是",memberStore.profile.orderId)
+  const res = await getOrderDetailAPI({orderId:memberStore.profile.orderId})
+  // const res = await getOrderDetailAPI(orderParam)
+  console.log("获取订单详情",res.data)
+  orderDetail.value = res.data
+  console.log("订单详情",orderDetail.value)
+}
+
+const getShopInfo = async () => {
+  console.log("传入参数是",orderDetail.value.shopId)
+  const res = await getShopInfoByIdAPI(orderDetail.value.shopId)
+  console.log("获取商家信息",res.data)
+  merchantInfo.value = res.data
+  console.log("商家信息",merchantInfo.value)
+}
+
+const getAddressInfo = async () => {
+  console.log("传入参数是",orderDetail.value.addressId)
+ const res = await getAddressById({addressId:orderDetail.value.addressId})
+  console.log("获取地址信息",res.data)
+  addressInfo.value = res.data
+  console.log("地址信息",addressInfo.value)
+}
+
+const getSkuInfo = async () => {
+  console.log("传入参数是",orderDetail.value.skuId)
+  const res = await getgoodsSkuAPI(orderDetail.value.skuId)
+  console.log("获取商品信息",res.data)
+  skuInfo.value = res.data
+  console.log("商品信息",goodsInfo.value)
+}
+
+
+const getGoodsInfo = async () => {
+  console.log("传入参数是",orderDetail.value.goodsId)
+  const res = await getgoodsDetailAPI(orderDetail.value.goodsId)
+  console.log("获取商品信息",res.data)
+  goodsInfo.value = res.data
+  console.log("商品信息",goodsInfo.value)
+}
+
+const getGoodsServiceInfo = async () => {
+  console.log("传入参数是",goodsInfo.value.serviceId)
+  const res = await getServiceAPI(goodsInfo.value.serviceId)
+  console.log("获取商品服务信息",res.data)
+  serviceInfo.value = res.data
+  console.log("商品服务信息",serviceInfo.value)
+}
+onMounted( async () => {
+  await getOrderDetail()
+  await getShopInfo()
+  await getAddressInfo()
+  await getSkuInfo()
+  await getGoodsInfo()
+  await getGoodsServiceInfo()
+})
+
+
+const orderStatusMap = {
+  'CreateOrder': { text: '待支付', color: '#FF9800', icon: '⏳', subtitle: '请支付订单' },
+  'Paid': { text: '支付完成', color: '#4CAF50', icon: '✅', subtitle: '待工作人员接单' },
+  // 可以继续添加其他状态
+  // 'cancel': { text: '已取消', color: '#F44336', icon: '❌' },
+  // 'complete': { text: '已完成', color: '#2196F3', icon: '🎉' }
+}
+
+// 获取状态显示信息
+const getOrderStatusInfo = (status) => {
+  return orderStatusMap[status] || { text: '未知状态', color: '#9E9E9E', icon: '❓' }
+}
+
 
 // 跳转个人中心
 const goToProfile = () => {
@@ -93,10 +178,10 @@ const viewMerchant = () => {
     <!-- 成功状态区域 -->
     <view class="success-header">
       <view class="success-icon-wrapper">
-        <text class="success-icon">✓</text>
+        <text class="success-icon">{{ getOrderStatusInfo(orderDetail.orderStatus).icon }}</text>
       </view>
-      <text class="success-title">支付成功</text>
-      <text class="success-subtitle">请等待商家接单</text>
+      <text class="success-title">{{ getOrderStatusInfo(orderDetail.orderStatus).text }}</text>
+      <text class="success-subtitle">{{ getOrderStatusInfo(orderDetail.orderStatus).subtitle }}</text>
     </view>
 
     <!-- 滚动内容区 -->
@@ -105,14 +190,14 @@ const viewMerchant = () => {
         <!-- 商家信息卡片 -->
         <view class="card merchant-card" hover-class="card-hover" @tap="viewMerchant">
           <view class="merchant-info">
-            <image class="merchant-logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVXrfMOFuWTymfkbbTUJ-oKsv6fbF6oRRTgXUwPM6LFGabFNxlJfuiRMqjI2ztUR8JCiHLuGmnyTUp_a-V2djJ8QguroEtl9GrhKO820O-So5lzghTd3BcBoW0e0w09NbXwHBsAWT4DdUyimPRW_cIGlPZDTDi64zYG3_TEXsbPQyyHUZbsqXoytVk955FMGdrT0g9pIJ-Oc1iid2UNnTIJNFEsjdgLpvpEDr0eVIW0GDNom1R21Tkv6Z3Bwiw-hnl27mxlCpeVA" mode="aspectFill" />
+            <image class="merchant-logo" :src="merchantInfo.shopLogo" mode="aspectFill" />
             <view class="merchant-details">
-              <text class="merchant-name">心连心专业家政服务</text>
+              <text class="merchant-name">{{ merchantInfo.shopName }}</text>
               <view class="rating-wrap">
                 <text class="star-icon">★</text>
-                <text class="rating-score">4.9</text>
+                <text class="rating-score">{{ merchantInfo.rating }}</text>
                 <text class="rating-divider">|</text>
-                <text class="service-count">服务过 1.2w+ 家庭</text>
+                <text class="service-count">服务过 {{ merchantInfo.totalOrders }}+ 次</text>
               </view>
             </view>
             <text class="arrow-icon">›</text>
@@ -124,8 +209,8 @@ const viewMerchant = () => {
           <view class="address-content">
             <text class="location-icon">📍</text>
             <view class="address-info">
-              <text class="user-name">王女士 <text class="user-phone">138****8888</text></text>
-              <text class="address-detail">上海市静安区南京西路1601号越洋广场22楼2203室</text>
+              <text class="user-name">{{ addressInfo.contactName }} <text class="user-phone">{{ addressInfo.contactPhone }}</text></text>
+              <text class="address-detail">{{addressInfo.province}}{{addressInfo.city}}{{addressInfo.district}}{{addressInfo.addressDetail}}</text>
             </view>
           </view>
         </view>
@@ -134,19 +219,19 @@ const viewMerchant = () => {
         <view class="card service-card">
           <view class="service-header">
             <view>
-              <text class="service-badge">深度保洁</text>
-              <text class="service-title">全屋深度深度保洁服务</text>
+              <text class="service-badge">{{serviceInfo.serviceName}}</text>
+              <text class="service-title">{{ goodsInfo.goodsName }}</text>
             </view>
             <view class="price-box">
               <text class="price-label">实付金额</text>
-              <text class="price-value">¥298.00</text>
+              <text class="price-value">¥{{ orderDetail.payAmount }}</text>
             </view>
           </view>
 
           <view class="service-details-list">
             <view class="detail-item">
               <text class="detail-label">服务类别</text>
-              <text class="detail-value">家庭深度清洁 / 三居室</text>
+              <text class="detail-value">{{ skuInfo.skuName }}</text>
             </view>
             <view class="detail-item">
               <text class="detail-label">预约时间</text>
@@ -156,13 +241,13 @@ const viewMerchant = () => {
             <view class="detail-item">
               <text class="detail-label">订单编号</text>
               <view class="order-no-wrap">
-                <text class="order-no">SH202405199827</text>
+                <text class="order-no">{{ orderDetail.orderNo }}</text>
                 <text class="copy-icon" hover-class="copy-hover" @tap.stop="copyOrderNo">📋</text>
               </view>
             </view>
             <view class="detail-item">
               <text class="detail-label">下单时间</text>
-              <text class="detail-value">2024-05-19 18:45:22</text>
+              <text class="detail-value">{{ orderDetail.createTime }}</text>
             </view>
           </view>
 

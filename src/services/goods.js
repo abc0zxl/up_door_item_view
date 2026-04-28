@@ -29,3 +29,11 @@ export const getgoodsSkuAPI = (params) => {
         url:'/client/service/SkuInfo?goodsid='+params,
     })
 }
+
+
+export const getServiceAPI = (params) => {
+    return http({
+        method:'GET',
+        url:'/client/service/goodsService?serviceId='+params,
+    })
+}
