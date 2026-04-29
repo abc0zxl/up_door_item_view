@@ -40,8 +40,7 @@ const getCategoryList = async () => {
 
 onMounted(() => {
     getCategoryList()
-}
-)
+})
 
 
 // 二级分类数据

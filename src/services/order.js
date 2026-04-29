@@ -77,3 +77,15 @@ export const getOrderListAPI = (params) => {
         }
     })
 }
+
+
+export const getSearchListAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/search',
+        data:{
+            ...params
+        }
+
+    })
+}

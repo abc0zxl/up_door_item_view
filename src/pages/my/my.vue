@@ -1,8 +1,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useMemberStore } from '@/stores/modules/member'
 
 // 订单状态数据
+const memberStore = useMemberStore()
+const logo = ref(memberStore.profile?.logo || '')
 const orderStatuses = ref([
   { icon: '1', label: '待付款',type:'CreateOrder' },
   { icon: '2', label: '待发货',type:'Paid' },
@@ -68,7 +71,7 @@ const handleEditProfile = () => {
           <view class="avatar-glow"></view>
           <image 
             class="avatar-image" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7js9VUKbplxxS_kt_slMAW2mAc_rvFMvZAXFR0lbCy2t_Z9MrSniubIjGz_VTb8e3G8ec5WbAHK-PSYRCzsMyF2DrBNTZA8OzyXnwIKbn5Pnp_4yAwUPUWLdpIPyrykISWRxKT9CyjF1BFPftloksgjuZYMCfgJxPYBX84HiBVTiZGk0moeaez73ZCawiT3OcDcQSMOtfIrpd4l-nV8Z1mlqxWwpbPOLepycGaZHkgEvvQIT_zJTiY_xb6idh7m90YktC-dFuOg"
+            :src="logo"
             mode="aspectFill"
           />
           <view class="verified-badge">

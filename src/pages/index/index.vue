@@ -6,7 +6,7 @@ import IndexNavber from '@/components/indexNavber.vue';
 
 
 
-
+const searchValue = ref('')
 const bannerList = ref([])
 
 const getHomeBannerData = async () => {
@@ -18,6 +18,13 @@ const getHomeBannerData = async () => {
   } catch (e) {
     console.error("请求失败", e)
   }
+}
+
+const startSearch = async () => {
+  console.log("搜索内容", searchValue.value)
+  uni.navigateTo({
+    url: '/pages/goods/goods?search='+searchValue.value
+  })
 }
 
 onMounted(() => {
@@ -64,9 +71,10 @@ const goToBrowserPage = () => {
               class="search-input" 
               placeholder="Search for cleaning, maintenance..." 
               type="text"
+              v-model="searchValue"
             />
           </view>
-          <button class="search-btn">搜索</button>
+          <button class="search-btn" @click="startSearch">搜索</button>
         </view>
       </view>
 

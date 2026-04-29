@@ -3,9 +3,10 @@
 import IndexNavber from '@/components/indexNavber.vue';
 import { ref, onMounted } from 'vue'
 import { getgoodsListAPI } from '@/services/goods';
+import { getSearchListAPI } from '@/services/order';
 
 const goodsList = ref([])
-
+const searchText =ref('')
 const categoryId = defineProps({
   serviceId:{
     type:Number,
@@ -14,6 +15,10 @@ const categoryId = defineProps({
   categoryId:{
     type:Number,
     default:1
+  },
+  search:{
+    type:String,
+    default:''
   }
 })
 const params = {
@@ -24,6 +29,7 @@ const params = {
 }
 
 const getGoodsListData = async () => {
+  if(categoryId.search==''){
   try {
     params.categoryId = categoryId.categoryId
     params.serviceId = categoryId.serviceId
@@ -36,6 +42,15 @@ const getGoodsListData = async () => {
     console.error("请求商品数据失败", e)
   }
 }
+if(categoryId.search!=''){
+  console.log("触发了搜索",categoryId.search)
+    const res = await getSearchListAPI({search:categoryId.search})
+    console.log("搜索数据", res)
+    goodsList.value = res.data.list || []
+    console.log("列表数据是",goodsList.value)
+  }
+}
+  
 
 onMounted(() => {
   getGoodsListData()
@@ -95,8 +110,12 @@ const setFilter = (type) => {
   console.log('切换筛选:', type)
 }
 
-const onSearchTap = () => {
-  console.log('搜索', keyword.value)
+const onSearchTap = async () => {
+  console.log('搜索', searchText.value)
+    const res = await getSearchListAPI({search:searchText.value})
+    console.log("搜索数据", res)
+    goodsList.value = res.data.list || []
+    console.log("列表数据是",goodsList.value)
 }
 
 const goToDetail = (id) => {
@@ -120,14 +139,17 @@ const onBook = (id) => {
       <!-- 搜索栏 -->
       <view class="search-section">
         <view class="search-box">
-          <text class="search-icon">🔍</text>
-          <input
-            class="search-input"
-            type="text"
-            placeholder="         搜索家政、维修..."
-            placeholder-class="search-placeholder"
-            v-model="keyword"
-          />
+          <view class="search-input-wrapper">
+            <text class="search-icon">🔍</text>
+            <input
+              class="search-input"
+              type="text"
+              placeholder="搜索家政、维修..."
+              placeholder-class="search-placeholder"
+              v-model="searchText"
+            />
+          </view>
+          <button class="search-btn" @click="onSearchTap">搜索</button>
         </view>
       </view>
 
@@ -264,17 +286,22 @@ $shadow-color: rgba(255, 133, 27, 0.08);
 
 /* 搜索栏 */
 .search-section {
-
   margin-bottom: 10px;
 }
 
 .search-box {
-  position: relative;
-//   align-items: center;
-//   width78: 280px;
-//   width:540rpx;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
-    box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-icon {
@@ -282,28 +309,48 @@ $shadow-color: rgba(255, 133, 27, 0.08);
   left: 20px;
   top: 50%;
   transform: translateY(-50%);
-//   font-size: 20px;
   color: $on-surface-variant;
-//   pointer-events: none;
-    // box-sizing: border-box;
-    
+  z-index: 1;
 }
 
 .search-input {
   width: 100%;
   height: 56px;
-//   padding-left: 52px;
-//   padding-right: 24px;
+  padding-left: 52px;
+  padding-right: 20px;
   background-color: $surface-lowest;
   border-radius: 28px;
   font-size: 16px;
   color: $on-surface;
   box-shadow: 0 8px 24px $shadow-color;
   border: none;
+  box-sizing: border-box;
+}
+
+.search-btn {
+  background: $primary;
+  color: white;
+  border-radius: 60px;
+  padding: 0 20px;
+  height: 56px;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 133, 27, 0.3);
+  
+  &:active {
+    transform: scale(0.95);
+    background: $primary-dark;
+  }
 }
 
 .search-placeholder {
-//   color: $on-surface-variant;
+  color: $on-surface-variant;
 }
 
 /* 筛选栏（横向滚动） */

@@ -62,3 +62,13 @@ export const LoginAPI = (params) => {
         }
     })
 }
+
+export const updateUserAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/upProfile',
+        data:{
+            ...params
+        }
+    })
+}

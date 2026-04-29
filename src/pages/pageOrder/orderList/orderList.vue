@@ -60,7 +60,6 @@ const getOrderList = async () => {
     ordersData.value = res.data.list
     console.log("获取到的订单列表",ordersData.value)
       activeTab.value = selectType.type
-
   }
 }
 

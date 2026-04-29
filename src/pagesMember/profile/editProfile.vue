@@ -1,15 +1,55 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useMemberStore } from '@/stores/modules/member'
+import { updateUserAPI } from '@/services/user'
 
+
+
+// const memberStore = useMemberStore()
+const memberStore = useMemberStore()
+
+const userInfo = ref({
+  nickname: '',
+  avatar: '',
+  bio: '',
+  phone: '',
+  gender: 0,
+  birthday: ''
+})
+// const userInfo ={
+//   nickname: '',
+//   avatar: '',
+//   bio: '',
+//   phone: '',
+//   gender: 0,
+//   birthday: ''
+// }
+onMounted(() => {
+  // 组件挂载后再赋值
+  if (memberStore.profile) {
+    userInfo.value = {
+      id: memberStore.profile?.userId || '',
+      nickname: memberStore.profile?.nickname || '',
+      avatar: memberStore.profile?.logo || '',
+      bio: memberStore.profile?.bio || '',
+      phone: memberStore.profile?.phone || '',
+      gender: memberStore.profile?.gender || 0,
+      birthday: memberStore.profile?.birthday || ''
+    }
+  }
+  console.log(userInfo.value)
+})
+
+// const userInfo = async () => {
+//   const res = await memberStore.userInfo()
+//   console.log("用户信息", res)
+// }
 // 用户信息数据
-const userInfo = reactive({
-  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA7js9VUKbplxxS_kt_slMAW2mAc_rvFMvZAXFR0lbCy2t_Z9MrSniubIjGz_VTb8e3G8ec5WbAHK-PSYRCzsMyF2DrBNTZA8OzyXnwIKbn5Pnp_4yAwUPUWLdpIPyrykISWRxKT9CyjF1BFPftloksgjuZYMCfgJxPYBX84HiBVTiZGk0moeaez73ZCawiT3OcDcQSMOtfIrpd4l-nV8Z1mlqxWwpbPOLepycGaZHkgEvvQIT_zJTiY_xb6idh7m90YktC-dFuOg',
-  nickname: '上门管家',
-  bio: '用心服务每一刻',
-  phone: '138****8888',
-  gender: 'male', // male: 男, female: 女, unknown: 未知
-  birthday: '1990-01-01',
-  region: '北京市 朝阳区'
+
+
+
+onMounted(() =>{
+  console.log("用户信息",userInfo.value.nickname)
 })
 
 // 表单验证状态
@@ -26,7 +66,9 @@ const goBack = () => {
   uni.navigateBack()
 }
 
-const handleSave = () => {
+const handleSave = async () => {
+
+
   // 表单验证
   if (!validateForm()) {
     return
@@ -36,6 +78,10 @@ const handleSave = () => {
   uni.showLoading({
     title: '保存中...'
   })
+  console.log("传递的用户参数",userInfo.value)
+  const params = await updateUserAPI(userInfo.value)
+  console.log("更新用户信息", params)
+
   
   setTimeout(() => {
     uni.hideLoading()
@@ -43,7 +89,6 @@ const handleSave = () => {
       title: '保存成功',
       icon: 'success'
     })
-    
     // 返回上一页
     setTimeout(() => {
       uni.navigateBack()
@@ -66,7 +111,7 @@ const handleAvatarChange = () => {
         
         setTimeout(() => {
           uni.hideLoading()
-          userInfo.avatar = tempFilePaths[0]
+          userInfo.value.avatar = tempFilePaths[0]
           uni.showToast({
             title: '头像更新成功',
             icon: 'success'
@@ -78,11 +123,11 @@ const handleAvatarChange = () => {
 }
 
 const handleGenderChange = (gender) => {
-  userInfo.gender = gender
+  userInfo.value.gender = gender
 }
 
 const handleBirthdayChange = (e) => {
-  userInfo.birthday = e.detail.value
+  userInfo.value.birthday = e.detail.value
 }
 
 const handleRegionChange = () => {
@@ -90,7 +135,7 @@ const handleRegionChange = () => {
     itemList: ['北京市 朝阳区', '上海市 浦东新区', '广州市 天河区', '深圳市 南山区'],
     success: (res) => {
       const regions = ['北京市 朝阳区', '上海市 浦东新区', '广州市 天河区', '深圳市 南山区']
-      userInfo.region = regions[res.tapIndex]
+      userInfo.value.region = regions[res.tapIndex]
     }
   })
 }
@@ -103,16 +148,16 @@ const validateForm = () => {
   formErrors.bio = ''
   
   // 昵称验证
-  if (!userInfo.nickname.trim()) {
+  if (!userInfo.value.nickname.trim()) {
     formErrors.nickname = '昵称不能为空'
     isValid = false
-  } else if (userInfo.nickname.length > 20) {
+  } else if (userInfo.value.nickname.length > 20) {
     formErrors.nickname = '昵称不能超过20个字符'
     isValid = false
   }
   
   // 简介验证
-  if (userInfo.bio.length > 50) {
+  if (userInfo.value.bio.length > 50) {
     formErrors.bio = '简介不能超过50个字符'
     isValid = false
   }
@@ -140,7 +185,7 @@ const getGenderIcon = (gender) => {
 
 // 计算剩余字符数
 const remainingChars = (field, maxLength) => {
-  return maxLength - (userInfo[field]?.length || 0)
+  return maxLength - (userInfo.value[field]?.length || 0)
 }
 </script>
 
@@ -165,7 +210,7 @@ const remainingChars = (field, maxLength) => {
           <view class="avatar-glow"></view>
           <image 
             class="avatar-image" 
-            :src="userInfo.avatar" 
+            :src="userInfo.avatar"
             mode="aspectFill"
           />
           <view class="avatar-edit-overlay" @click="handleAvatarChange">
@@ -224,24 +269,24 @@ const remainingChars = (field, maxLength) => {
           <view class="gender-selector">
             <button 
               class="gender-option" 
-              :class="{ 'gender-active': userInfo.gender === 'male' }"
-              @click="handleGenderChange('male')"
+              :class="{ 'gender-active': userInfo.gender === 1 }"
+              @click="handleGenderChange(1)"
             >
               <text class="gender-icon">👨</text>
               <text class="gender-text">男</text>
             </button>
             <button 
               class="gender-option" 
-              :class="{ 'gender-active': userInfo.gender === 'female' }"
-              @click="handleGenderChange('female')"
+              :class="{ 'gender-active': userInfo.gender === 2 }"
+              @click="handleGenderChange(2)"
             >
               <text class="gender-icon">👩</text>
               <text class="gender-text">女</text>
             </button>
             <button 
               class="gender-option" 
-              :class="{ 'gender-active': userInfo.gender === 'unknown' }"
-              @click="handleGenderChange('unknown')"
+              :class="{ 'gender-active': userInfo.gender === 0 }"
+              @click="handleGenderChange(0)"
             >
               <text class="gender-icon">👤</text>
               <text class="gender-text">未知</text>
@@ -266,7 +311,7 @@ const remainingChars = (field, maxLength) => {
         </view>
 
         <!-- 地区 -->
-        <view class="form-item">
+        <!-- <view class="form-item">
           <view class="form-label">地区</view>
           <view class="form-input-wrapper">
             <button class="region-btn" @click="handleRegionChange">
@@ -274,7 +319,7 @@ const remainingChars = (field, maxLength) => {
               <text class="material-symbols-outlined region-arrow">→</text>
             </button>
           </view>
-        </view>
+        </view> -->
                         <button class="save-btn" @click="handleSave">保存</button>
 
       </view>

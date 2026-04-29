@@ -1,6 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 
+//消息种类枚举
+// 订单状态数据
+const noticeType = ref([
+  { icon: '1', label: '订单状态通知',type:'order' },
+  { icon: '2', label: '系统消息',type:'system' },
+  { icon: '3', label: '优惠活动消息',type:'promotion' },
+  { icon: '4', label: '服务完成消息',type:'order' },
+  { icon: '5', label: '支付成功提醒',type:'pay' }
+])
+
 // 通知数据
 const notifications = ref([
   {

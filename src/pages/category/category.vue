@@ -16,6 +16,20 @@ const params = {
 }
 
 
+
+const handleSubcategoryClick = (subcategory) => {
+  console.log('选择了子分类:', subcategory)
+  uni.showToast({
+    title: `选择了${subcategory.serviceName}`,
+    icon: 'none'
+  })
+  
+  // 这里可以跳转到对应的服务列表页面
+  uni.navigateTo({
+    url: '/pages/goods/goods?serviceId='+subcategory.serviceId+'&categoryId='+subcategory.categoryId
+  })
+}
+
 const getHomeBannerData = async () => {
   try {
     const res = await getHomeBannerAPI()
@@ -157,7 +171,7 @@ const specialList = ref([
         <view class="section">
           <view class="section-title">专项服务</view>
           <view class="grid-box">
-            <view v-for="(item, idx) in categoryList" :key="idx" class="grid-item">
+            <view v-for="(item, idx) in categoryList" :key="idx" class="grid-item" @click="handleSubcategoryClick(item)">
               <view class="item-icon">A</view>
               <view class="item-text">{{ item.serviceName }}</view>
             </view>

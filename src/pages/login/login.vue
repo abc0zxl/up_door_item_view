@@ -23,7 +23,12 @@ const memberToken= async ()=>{
         userId: userInfo.value.userInfo.userId,
         nickname: userInfo.value.userInfo.nickname,
         token: userInfo.value.token,
-        refreshToken: userInfo.value.refreshToken
+        refreshToken: userInfo.value.refreshToken,
+        phone:userInfo.value.userInfo.phone,
+        logo:userInfo.value.userInfo.avatar,
+        bio:userInfo.value.userInfo.bio,
+        gender:userInfo.value.userInfo.gender, // male: 男, female: 女, unknown: 未知
+        birthday:userInfo.value.userInfo.birthday
         })
       }
    uni.showToast({title:'登录成功',icon:'success'})
@@ -48,7 +53,10 @@ const handleLogin=  async ()=>{
         userId: userInfo.value.userInfo.id,
         nickname: userInfo.value.userInfo.nickname,
         token: userInfo.value.token,
-        refreshToken: userInfo.value.refreshToken
+        refreshToken: userInfo.value.refreshToken,
+        bio:userInfo.value.userInfo.bio,
+        gender:userInfo.value.userInfo.gender, // male: 男, female: 女, unknown: 未知
+        birthday:userInfo.value.userInfo.birthday
         })
       }
 
