@@ -66,3 +66,14 @@ export const payOrderPhoneAPI = (order) => {
   }
     })
 }
+
+
+export const getOrderListAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/order/AllOrderList',
+        data:{
+            ...params
+        }
+    })
+}

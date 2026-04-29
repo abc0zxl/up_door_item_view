@@ -7,6 +7,9 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+            "permissions": {
+      "chooseLocation": {}
+    },
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -70,6 +73,11 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
+            "permission": {
+      "scope.userLocation": {
+        "desc": "获取位置信息用于选择服务区域"
+      }
+    },
         "appid" : "",
         "setting" : {
             "urlCheck" : false

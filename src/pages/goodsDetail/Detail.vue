@@ -2,10 +2,11 @@
 import { ref,reactive, onMounted } from 'vue'
 import { getgoodsDetailAPI } from '@/services/goods.js'
 import { getgoodsSkuAPI } from '@/services/goods.js'
-import { addCartAPI } from '@/services/cart.js'
+import { addCartAPI,GetNumberAPI,AddFavoriteAPI } from '@/services/cart.js'
+import { useMemberStore } from '@/stores/modules/member.js'
 
 
-
+const memberStore = useMemberStore()
 const query = defineProps({
   id: {
     type: Number,
@@ -24,6 +25,8 @@ const goodsInfo = ref({})         // 商品信息
 const goodsDetail = ref({})       // 商品详情信息
 const goodsdata = ref({})
 const cartParams = ref({})     // 加入购物车参数
+const isShow = ref(true)        // 是否显示购物车数量
+const isFavorited = ref(false)
 
 
 
@@ -100,12 +103,18 @@ const openSkuPopup = (number) => {
 }
 
 
+const getCartNumber = async () => {
+  const res = await GetNumberAPI({userId:memberStore.profile.userId})
+  console.log("购物车数量是"+res.data)
+  cartCount.value = res.data
+}
 
 const onAddCart=async (ev) => {
+  // isShow.value = true
   //凑齐参数
   cartParams.value = {
     skuId:ev.id,
-    userId:10012,
+    userId:memberStore.profile.userId,
     quantity:ev.buy_num,
     goodsId:ev.goodsId,
     shopId:ev.shopId
@@ -113,14 +122,20 @@ const onAddCart=async (ev) => {
     // goodsId:ev.goods_id,
     }
     console.log("凑齐了加入购物车的参数",cartParams.value)
-  await addCartAPI(cartParams.value)
+  const res = await addCartAPI(cartParams.value)
   // console.log('加入购物车')
+  console.log("加入购物车返回结果",res)
+if(res){
   uni.showToast({
     title:'加入购物车成功',
     icon:'success'
+
   })
+        cartCount.value++
+}
   // 关闭弹窗
-  isShow.value=false
+  // isShow.value=false
+  skuKey.value = false
 }
 
 const onBuyNow=(params)=>{
@@ -260,11 +275,16 @@ const getGoodsDetail = async () => {
 }
 
 
+
+const removeFavorite = async () => {
+}
+
 // 页面加载
 onMounted((options) => {
   // init(options)
   getGoodsDetail()
   getGoodsSku(query.id)
+  getCartNumber()
 })
 // onLoad(()=>{
 //     getGoodsByIdData()
@@ -286,8 +306,8 @@ const features = ref([
 ])
 
 // 底部状态
-const isFavorited = ref(false)
-const cartCount = ref(2)
+
+const cartCount = ref()
 
 // 交互方法
 const goBack = () => {
@@ -302,17 +322,39 @@ const selectSpec = () => {
 const selectAddress = () => {
   uni.showToast({ title: '选择地址', icon: 'none' })
 }
-const toggleFavorite = () => {
+
+const toggleFavorite = async () => {
+
+
+  const favoriteParams = {
+    userId: memberStore.profile.userId,
+    goodsId: query.id,
+    status: isFavorited.value ? 1 : 0
+  }
+  const res = await AddFavoriteAPI(favoriteParams)
+  console.log("收藏商品返回结果",res)
+  if(res){
+    uni.showToast({
+      title:'收藏成功',
+      icon:'success'
+    })
+  }
   isFavorited.value = !isFavorited.value
   uni.showToast({ title: isFavorited.value ? '已收藏' : '已取消收藏', icon: 'none' })
 }
+
+
+
+
 const contactService = () => {
   uni.showToast({ title: '联系客服', icon: 'none' })
 }
 const goToCart = () => {
   uni.showToast({ title: '打开购物车', icon: 'none' })
+    uni.switchTab({url:'/pages/cart/cart'})
 }
-const addToCart = () => {
+const addToCart =  () => {
+
   cartCount.value++
   uni.showToast({ title: '已加入购物车', icon: 'success' })
 }
@@ -347,12 +389,14 @@ const addToCart = () => {
 
 <!-- 商品种类选择 -->
         <vk-data-goods-sku-popup
+        v-if="isShow"
             ref="skuPopup"
             v-model="skuKey"
             border-radius="20"
             :z-index="990"
             :localdata="goodsInfo"
             :mode="skuMode"
+            @open="onOpenSkuPopup"
             @add-cart="onAddCart"
             @buy-now="onBuyNow"
         ></vk-data-goods-sku-popup>

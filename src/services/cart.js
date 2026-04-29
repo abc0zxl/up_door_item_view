@@ -20,3 +20,24 @@ export const getCartListAPI = (params) => {
         }
     })
 }
+
+
+export const GetNumberAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/cart/GetNumber',
+        data:{
+            ...params
+        }
+    })
+}
+
+export const AddFavoriteAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/cart/Favorite',
+        data:{
+            ...params
+        }
+    })
+}

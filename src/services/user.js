@@ -42,3 +42,23 @@ export const getAddressById = (params) => {
     })
 }
 
+export const addAddressAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/address/createAddress',
+        data:{
+            ...params
+        }
+    })
+}
+
+
+export const LoginAPI = (params) => {
+    return http({
+        method:'POST',
+        url:'/client/auth/login2',
+        data:{
+            ...params
+        }
+    })
+}

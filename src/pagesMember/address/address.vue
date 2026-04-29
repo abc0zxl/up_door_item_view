@@ -1,15 +1,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { getAddressListByUserAPI } from '@/services/user'
 import { useAddress } from '@/stores/modules/addressStore'
+import { useMemberStore } from '@/stores/modules/member'
 
 // 用户头像图片（使用原 HTML 中的图片）
 const userAvatar = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuBUSpn1yYaIzS5a8YTWxhCDRvqfcJxXEN5RMiINPuwY8nG5sdw3IlxjqYD0hf-nJGwk3j4z44ziq6IEwe2xOwja727TdidXu3LorQ8S6F-eup57xeqFNffUCIXroaSeRAB9lAQ13u_MXGXquhojlPPUbcpcu6txk4EW6hmWasziXPDdhgt4yNLaarA79b1qqpASYl31UxBIe1ycB1kAi1e6F2lhwbIOxD72tZeKrpmYSwn-mlGVlZQs5103yYRCRhMcyhs24ekrnA')
 
 // 地图装饰背景图
 const mapImage = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuAfC562r2J36hw7WS4mgJzpNoKarHYb6uEcr7oYKSL1jPNpjqcWs15ikjw4ynkRPz1Pm4aFIdht3kiPi6pqrYeXOCgSgIkkp9gEDwLXysWyl4YnwzVyXQ0Ex0hrSgFWJX55e2DS3dewcbU-uWT8c7K_HDAUpTXvsZRaJaSmZhQONo304LZ56wE6bF0cbgTaSk4LDO0Aqodi6zXYa2gX-wfDcnf3ySwNZz50clMyZERWGsatOQsQmRp_gTMkd2uUSBPt9sYiMKQm2A')
-
+const userStore = useMemberStore()
 // 地址列表数据
 
 const addressList = ref({})
@@ -42,12 +44,6 @@ const addressList = ref({})
   // addressUser.userId = option.userId
   // console.log("地址页面获取到的userId是",addressUser.userId)
 
-const TransParam = defineProps({
-  userId: {
-    type:Number,
-    default:0
-  }
-})  
 const addressStore = useAddress()
 
 const getAddressListByUserId = async (param) => {
@@ -60,8 +56,8 @@ const getAddressListByUserId = async (param) => {
   console.log("获取到的地址列表是",addressList.value)
 }
 
-onMounted(() => {
-  getAddressListByUserId(TransParam.userId)
+onShow(() => {
+  getAddressListByUserId(userStore.profile.userId)
 })
 const handleSelectAddress = (item) => {
   uni.showToast({

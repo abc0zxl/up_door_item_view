@@ -1,147 +1,76 @@
-<template>
-  <view class="edit-address-page">
-    <!-- 自定义导航栏 -->
-    <!-- <view class="custom-navbar">
-      <view class="navbar-content">
-        <view class="back-btn" hover-class="back-btn-hover" @tap="handleBack">
-          <text class="icon-text">←</text>
-        </view>
-        <text class="navbar-title">编辑地址</text>
-        <view class="delete-btn" @tap="handleDelete">
-          <text class="delete-text">删除</text>
-        </view>
-      </view>
-      <view class="navbar-divider"></view>
-    </view> -->
-
-    <!-- 主内容区域（滚动） -->
-    <scroll-view class="main-scroll" scroll-y enhanced :show-scrollbar="false">
-      <!-- 头部文案 -->
-      <view class="header-section">
-        <text class="header-title">完善您的<text class="header-highlight">服务地址</text></text>
-        <text class="header-desc">请提供准确的地址，以便我们的服务人员准时到达。</text>
-      </view>
-
-      <!-- 表单区域 -->
-      <view class="form-container">
-        <!-- 联系人信息组 -->
-        <view class="form-group">
-          <view class="input-item">
-            <text class="input-label">联系人</text>
-            <view class="input-field">
-              <text class="field-icon">👤</text>
-              <input
-                class="field-input"
-                type="text"
-                v-model="formData.name"
-                placeholder="收货人姓名"
-                placeholder-class="input-placeholder"
-              />
-            </view>
-          </view>
-          <view class="input-item">
-            <text class="input-label">手机号码</text>
-            <view class="input-field">
-              <text class="field-icon">📱</text>
-              <input
-                class="field-input"
-                type="number"
-                v-model="formData.phone"
-                placeholder="请输入手机号"
-                placeholder-class="input-placeholder"
-                maxlength="11"
-              />
-            </view>
-          </view>
-        </view>
-
-        <!-- 地址信息组 -->
-        <view class="form-group">
-          <view class="input-item">
-            <text class="input-label">所在地区</text>
-            <view class="input-field region-field" @tap="handleChooseRegion">
-              <text class="field-icon">📍</text>
-              <text class="region-text">{{ formData.region || '请选择省市区' }}</text>
-              <text class="arrow-icon">›</text>
-            </view>
-          </view>
-          <view class="input-item">
-            <text class="input-label">详细地址</text>
-            <view class="input-field textarea-field">
-              <text class="field-icon">🏠</text>
-              <textarea
-                class="field-textarea"
-                v-model="formData.detail"
-                placeholder="街道、楼牌号等详细信息"
-                placeholder-class="input-placeholder"
-                :auto-height="true"
-                maxlength="200"
-              />
-            </view>
-          </view>
-        </view>
-
-        <!-- 默认地址开关 -->
-        <view class="switch-item">
-          <view class="switch-left">
-            <view class="switch-icon-bg">
-              <text class="switch-icon">✓</text>
-            </view>
-            <view class="switch-texts">
-              <text class="switch-title">设为默认地址</text>
-              <text class="switch-desc">下单时将优先使用该地址</text>
-            </view>
-          </view>
-          <switch
-            :checked="formData.isDefault"
-            color="#FF851B"
-            @change="handleDefaultChange"
-          />
-        </view>
-      </view>
-
-      <!-- 地图装饰卡片 -->
-      <view class="map-card">
-        <image
-          class="map-image"
-          :src="mapImage"
-          mode="aspectFill"
-        ></image>
-        <view class="map-overlay"></view>
-        <view class="map-location-tag">
-          <text class="location-icon">📍</text>
-          <text class="location-text">智能定位校准中</text>
-        </view>
-      </view>
-
-      <!-- 底部占位，防止内容被固定按钮遮挡 -->
-      <view class="bottom-placeholder"></view>
-    </scroll-view>
-
-    <!-- 底部固定保存按钮 -->
-    <view class="fixed-footer">
-      <button class="save-btn" hover-class="save-btn-hover" @tap="handleSave">
-        <text class="save-btn-text">保存并使用地址</text>
-      </button>
-    </view>
-  </view>
-</template>
-
 <script setup>
 import { ref } from 'vue'
-
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+import cityPicker from '@/uni_modules/piaoyi-cityPicker/components/piaoyi-cityPicker/piaoyi-cityPicker'
+import { useMemberStore } from '@/stores/modules/member'
+import { addAddressAPI } from '@/services/user'
 // 地图装饰图片（使用原 HTML 中的图片）
 const mapImage = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuAvTPx8UbFJEsPoijNxrmPWzmeY1vChWuuqVIm_ZJJd0n_zlQlyAiaBC2X1jmGIZ2RnrocGHGp9QDuWQhUc2SzRgM1fUfcpBkLaAsdkUGds3yFkKj98pNcO-4neRQ91tcMDV2mVlYNiEtmn1x58v7u_-cb8ZT55htxFXW-OLfqLyWT2_q9LjThELxVI5LBDWcPSlmM7W2_OId4QNHqb75htblxznI0jFH-xTFlBKl66VFeZdcQR0IdGmgz_w--zUZCPFjpoGpv1TA')
 
 // 表单数据（示例默认值，实际应从上一页传入）
+const userStore = useMemberStore()
 const formData = ref({
-  name: '王小明',
-  phone: '13800138000',
-  region: '北京市 朝阳区 建外街道',
-  detail: '建外SOHO 3号楼 1502室',
-  isDefault: true
+  userId:userStore.profile.userId,
+  contactName: '',
+  contactPhone: '',
+  province: '',
+  city: '',
+  district: '',
+  detailAddress: '',
+  isDefault: 1
+})
+// 响应式数据
+const visible = ref(false)
+const maskCloseAble = ref(true)
+const addressInfo = ref({})
+const str = ref()
+const defaultValue = ref('420103')   // 或 ref(['河北省','唐山市','丰南区'])
+const column = ref(3)
+
+
+const createAddressAPI = async () => {
+
+}
+// 方法
+const open = () => {
+  visible.value = true
+}
+
+const confirm = (val) => {
+  // console.log(val)
+  // str.value = JSON.stringify(val)
+  formData.value.province = val.provinceName
+  formData.value.city = val.cityName
+  formData.value.district = val.areaName
+  addressInfo.value = val
+  console.log("addressInfo.value", addressInfo.value)
+  str.value = val.name
+  visible.value = false
+}
+
+const cancel = () => {
+  visible.value = false
+}
+
+// 分享生命周期
+onShareAppMessage((res) => {
+  if (res.from === 'button') {
+    console.log(res.target)
+  }
+  return {
+    title: 'data-cityPicker省市区地址选择器！',
+    path: '/pages/cityPicker/cityPicker'
+  }
 })
 
+onShareTimeline((res) => {
+  if (res.from === 'button') {
+    console.log(res.target)
+  }
+  return {
+    title: 'data-cityPicker省市区地址选择器！'
+  }
+})
 // 返回上一页
 const handleBack = () => {
   uni.navigateBack({
@@ -201,13 +130,17 @@ const handleChooseRegion = () => {
 
 // 默认地址开关变化
 const handleDefaultChange = (e) => {
-  formData.value.isDefault = e.detail.value
+  formData.value.isDefault = e.detail.value ? 1 : 0
+}
+const onRegionChange = (e) => {
+  const region = e.detail.value.map(item => item.text).join('')
+  formData.value.region = region
 }
 
 // 保存地址
-const handleSave = () => {
+const handleSave = async () => {
   // 简单表单校验
-  if (!formData.value.name.trim()) {
+  if (!formData.value.contactName.trim()) {
     uni.showToast({
       title: '请填写联系人',
       icon: 'none'
@@ -215,21 +148,21 @@ const handleSave = () => {
     return
   }
   const phoneReg = /^1[3-9]\d{9}$/
-  if (!phoneReg.test(formData.value.phone)) {
+  if (!phoneReg.test(formData.value.contactPhone)) {
     uni.showToast({
       title: '手机号格式不正确',
       icon: 'none'
     })
     return
   }
-  if (!formData.value.region) {
+  if (!formData.value.province || !formData.value.city || !formData.value.district) {
     uni.showToast({
       title: '请选择所在地区',
       icon: 'none'
     })
     return
   }
-  if (!formData.value.detail.trim()) {
+  if (!formData.value.detailAddress.trim()) {
     uni.showToast({
       title: '请填写详细地址',
       icon: 'none'
@@ -242,20 +175,197 @@ const handleSave = () => {
     title: '保存中...',
     mask: true
   })
-  setTimeout(() => {
-    uni.hideLoading()
+
+  try {
+    const res = await addAddressAPI(formData.value)
+    console.log("返回的消息：",res)
+    
+    uni.hideLoading() // 隐藏loading
+    
+    if(res.code === 200){
+      console.log("返回的消息：",res.msg)
+      uni.showToast({
+        title: '添加成功',
+        icon: 'success',
+        success: () => {
+          setTimeout(() => {
+            uni.navigateBack()
+          }, 1500)
+        }
+      })
+    } else {
+      // 处理其他状态码
+      uni.showToast({
+        title: res.msg || '保存失败',
+        icon: 'none'
+      })
+    }
+  } catch (error) {
+    uni.hideLoading() // 隐藏loading
+    console.error('保存地址失败:', error)
     uni.showToast({
-      title: '保存成功',
-      icon: 'success',
-      success: () => {
-        setTimeout(() => {
-          uni.navigateBack()
-        }, 1500)
-      }
+      title: '网络错误，请重试',
+      icon: 'none'
     })
-  }, 500)
+  }
+  // setTimeout(() => {
+  //   uni.hideLoading()
+  //   uni.showToast({
+  //     title: '保存成功',
+  //     icon: 'success',
+  //     success: () => {
+  //       setTimeout(() => {
+  //         uni.navigateBack()
+  //       }, 1500)
+  //     }
+  //   })
+  // }, 500)
 }
 </script>
+
+<template>
+  <view class="edit-address-page">
+    <!-- 自定义导航栏 -->
+    <!-- <view class="custom-navbar">
+      <view class="navbar-content">
+        <view class="back-btn" hover-class="back-btn-hover" @tap="handleBack">
+          <text class="icon-text">←</text>
+        </view>
+        <text class="navbar-title">编辑地址</text>
+        <view class="delete-btn" @tap="handleDelete">
+          <text class="delete-text">删除</text>
+        </view>
+      </view>
+      <view class="navbar-divider"></view>
+    </view> -->
+
+    <!-- 主内容区域（滚动） -->
+    <scroll-view class="main-scroll" scroll-y enhanced :show-scrollbar="false">
+      <!-- 头部文案 -->
+      <view class="header-section">
+        <text class="header-title">完善您的<text class="header-highlight">服务地址</text></text>
+        <text class="header-desc">请提供准确的地址，以便我们的服务人员准时到达。</text>
+      </view>
+
+      <!-- 表单区域 -->
+      <view class="form-container">
+        <!-- 联系人信息组 -->
+        <view class="form-group">
+          <view class="input-item">
+            <text class="input-label">联系人</text>
+            <view class="input-field">
+              <text class="field-icon">👤</text>
+              <input
+                class="field-input"
+                type="text"
+                v-model="formData.contactName"
+                placeholder="收货人姓名"
+                placeholder-class="input-placeholder"
+              />
+            </view>
+          </view>
+          <view class="input-item">
+            <text class="input-label">手机号码</text>
+            <view class="input-field">
+              <text class="field-icon">📱</text>
+              <input
+                class="field-input"
+                type="number"
+                v-model="formData.contactPhone"
+                placeholder="请输入手机号"
+                placeholder-class="input-placeholder"
+                maxlength="11"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 地址信息组 -->
+        <view class="form-group">
+          <view class="input-item">
+            <text class="input-label">所在地区</text>
+            <!-- <view class="input-field region-field" @tap="handleChooseRegion">
+              <text class="field-icon">📍</text>
+              <text class="region-text">{{ formData.region || '请选择省市区' }}</text>
+              <text class="arrow-icon">›</text>
+            </view> -->
+              <!-- <uni-data-picker  placeholder="请选择省市区"  @change="onRegionChange"></uni-data-picker> -->
+  <view>
+    <view>
+      <button class="input-field region-field" @tap="open">{{ str || '请选择省市区' }}</button>
+    </view>
+    <cityPicker
+      :column="column"
+      :default-value="defaultValue"
+      :mask-close-able="maskCloseAble"
+      @confirm="confirm"
+      @cancel="cancel"
+      :visible="visible"
+    />
+  </view>
+          </view>
+          <view class="input-item">
+            <text class="input-label">详细地址</text>
+            <view class="input-field textarea-field">
+              <text class="field-icon">🏠</text>
+              <textarea
+                class="field-textarea"
+                v-model="formData.detailAddress"
+                placeholder="街道、楼牌号等详细信息"
+                placeholder-class="input-placeholder"
+                :auto-height="true"
+                maxlength="200"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 默认地址开关 -->
+        <view class="switch-item">
+          <view class="switch-left">
+            <view class="switch-icon-bg">
+              <text class="switch-icon">✓</text>
+            </view>
+            <view class="switch-texts">
+              <text class="switch-title">设为默认地址</text>
+              <text class="switch-desc">下单时将优先使用该地址</text>
+            </view>
+          </view>
+          <switch
+            :checked="formData.isDefault"
+            color="#FF851B"
+            @change="handleDefaultChange"
+          />
+        </view>
+      </view>
+
+      <!-- 地图装饰卡片 -->
+      <view class="map-card">
+        <image
+          class="map-image"
+          :src="mapImage"
+          mode="aspectFill"
+        ></image>
+        <view class="map-overlay"></view>
+        <view class="map-location-tag">
+          <text class="location-icon">📍</text>
+          <text class="location-text">智能定位校准中</text>
+        </view>
+      </view>
+
+      <!-- 底部占位，防止内容被固定按钮遮挡 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+
+    <!-- 底部固定保存按钮 -->
+    <view class="fixed-footer">
+      <button class="save-btn" hover-class="save-btn-hover" @tap="handleSave">
+        <text class="save-btn-text">保存并使用地址</text>
+      </button>
+    </view>
+  </view>
+</template>
+
 
 <style scoped>
 /* 页面整体 */
@@ -430,12 +540,14 @@ const handleSave = () => {
 
 .region-field {
   justify-content: space-between;
+    font-size: 30rpx;
+  color: #848585;
 }
 
 .region-text {
   flex: 1;
   font-size: 30rpx;
-  color: #2E2F2F;
+  color: #2c2d2d;
 }
 
 .arrow-icon {

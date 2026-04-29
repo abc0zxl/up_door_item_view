@@ -4,17 +4,22 @@ import { ref } from 'vue'
 
 // 订单状态数据
 const orderStatuses = ref([
-  { icon: '1', label: '待付款' },
-  { icon: '2', label: '待发货' },
-  { icon: '3', label: '待收货' },
-  { icon: '4', label: '待评价' },
-  { icon: '5', label: '售后' }
+  { icon: '1', label: '待付款',type:'CreateOrder' },
+  { icon: '2', label: '待发货',type:'Paid' },
+  { icon: '3', label: '待收货',type:'Shipped' },
+  { icon: '4', label: '待评价',type:'Rated' },
+  { icon: '5', label: '售后',type:'Refunded' }
 ])
 
 // 方法
 const handleAddressManage = () => {
   console.log('跳转地址管理')
   uni.navigateTo({ url: '/pagesMember/address/address' })
+}
+
+const handleOrderClick = async (type)=> {
+  console.log('跳转订单详情',type)
+  uni.navigateTo({ url: '/pages/pageOrder/orderList/orderList?type='+type})
 }
 
 const handleSettings = () => {
@@ -84,7 +89,7 @@ const handleEditProfile = () => {
           </view>
         </view>
         <view class="order-grid">
-          <view class="order-item" v-for="order in orderStatuses" :key="order.label">
+          <view class="order-item" v-for="order in orderStatuses" :key="order.label" @click="handleOrderClick(order.type)">
             <view class="order-icon">
               <text class="material-symbols-outlined">{{ order.icon }}</text>
             </view>

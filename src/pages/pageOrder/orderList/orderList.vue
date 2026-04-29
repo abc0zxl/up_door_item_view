@@ -1,9 +1,14 @@
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useMemberStore } from '@/stores/modules/member'
+import { getOrderListAPI } from '@/services/order'
+
 
 // 获取系统状态栏高度 (uni-app 全局)
 const statusBarHeight = ref(20) // 默认值
+const ordersData = ref([])
+const activeTab = ref('all')
 // #ifdef APP-PLUS || H5
 try {
   const systemInfo = uni.getSystemInfoSync()
@@ -11,102 +16,146 @@ try {
 } catch(e) {}
 // #endif
 
+
+
 // 标签页配置
 const tabs = [
   { label: '全部', value: 'all' },
-  { label: '待付款', value: 'pending_payment' },
-  { label: '待服务', value: 'pending_service' },
+  { label: '待付款', value: 'CreateOrder' },
+  { label: '待服务', value: 'Paid' },
   { label: '已完成', value: 'completed' },
   { label: '退款/售后', value: 'refund' }
 ]
+// 订单状态映射
+const getOrderStatusText = (status) => {
+  const statusMap = {
+    'CreateOrder': '待付款',
+    'Paid': '待服务',
+    'completed': '已完成',
+    'refund': '退款/售后'
+  }
+  return statusMap[status] || '未知状态'
+}
+const orderListParams = {
+  userId : useMemberStore().profile.userId,
+  pageNum : 1,
+  pageSize : 100
+}
 
-const activeTab = ref('all')
+const selectType = defineProps({
+  type: {
+    type: String,
+    default: 'all'
+  }
+})
+
+
 
 // ---------- 模拟订单数据 ----------
-const ordersData = ref([
-  {
-    id: 1,
-    orderNo: '82749201934',
-    title: '专业深度保洁 - 3小时',
-    description: '包含厨房去油、卫浴除霉、全屋除尘',
-    price: '299.00',
-    status: 'pending_payment',
-    statusText: '待付款',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJRCBsLkRkckGh0YyTG23MOpxmlpW93Yvtb9J6NV3ZXzAHHXyYMlmScOQpYAsFpD50ltl4LmOBeh3jSDhf661Axz4LWNXeW8bwMVr5iI3tOsX_2Sq4GnKuWmsGhc7suvcYILsZiS8L10hU3UG6BTZHnCT8McqGBhQfCO6lqq8RgzQvtdvmMl2f7H8L7OQ3-izDTpaR4oz48gJD2mPUiLapsD6VMdQC-euX7Jr-lAFyizBZuKzMgYcv5WADz1aeyWqlmtMmWgx9KA'
-  },
-  {
-    id: 2,
-    orderNo: '82749201882',
-    title: '空调清洗维护 (挂机)',
-    description: '预约时间：2023-11-20 14:00',
-    price: '158.00',
-    status: 'pending_service',
-    statusText: '待服务',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAbuNXz67uijj--aXdnBeE88Ia18lnUbLcKVVCdMOZtqzIKjRlj6GMSeqdJbJNe_oNJjvYNH0MonVbXaJk17AVt_C7VHrDFZlk15EgtytkGh_Y3hIWkpmb5Qu6iDgE60LvKSsG0YoDK-g1ZrNYMz4mIVI_fp3GGVUeK69RUiGSy8IYN0RBnYre9uHzU9JcTmP3wgTsIBvWoaCsovS-MoRLXKZe5NgnCgDTH5bTmHJGoKI5al9hYvHnxqCgsUoLwJ36-h0LAddO_Gw'
-  },
-  {
-    id: 3,
-    orderNo: '82749199521',
-    title: '厨房疏通服务',
-    description: '服务师傅：李师傅 (已实名认证)',
-    price: '88.00',
-    status: 'completed',
-    statusText: '已完成',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
-  },
-  {
-    id: 4,
-    orderNo: '82749199123',
-    title: '全屋甲醛检测',
-    description: '专业仪器检测，出具报告',
-    price: '399.00',
-    status: 'pending_payment',
-    statusText: '待付款',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJRCBsLkRkckGh0YyTG23MOpxmlpW93Yvtb9J6NV3ZXzAHHXyYMlmScOQpYAsFpD50ltl4LmOBeh3jSDhf661Axz4LWNXeW8bwMVr5iI3tOsX_2Sq4GnKuWmsGhc7suvcYILsZiS8L10hU3UG6BTZHnCT8McqGBhQfCO6lqq8RgzQvtdvmMl2f7H8L7OQ3-izDTpaR4oz48gJD2mPUiLapsD6VMdQC-euX7Jr-lAFyizBZuKzMgYcv5WADz1aeyWqlmtMmWgx9KA'
-  },
-  {
-    id: 5,
-    orderNo: '82749198234',
-    title: '冰箱深度清洗',
-    description: '高温蒸汽杀菌消毒',
-    price: '129.00',
-    status: 'pending_service',
-    statusText: '待服务',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAbuNXz67uijj--aXdnBeE88Ia18lnUbLcKVVCdMOZtqzIKjRlj6GMSeqdJbJNe_oNJjvYNH0MonVbXaJk17AVt_C7VHrDFZlk15EgtytkGh_Y3hIWkpmb5Qu6iDgE60LvKSsG0YoDK-g1ZrNYMz4mIVI_fp3GGVUeK69RUiGSy8IYN0RBnYre9uHzU9JcTmP3wgTsIBvWoaCsovS-MoRLXKZe5NgnCgDTH5bTmHJGoKI5al9hYvHnxqCgsUoLwJ36-h0LAddO_Gw'
-  },
-  {
-    id: 6,
-    orderNo: '82749197888',
-    title: '油烟机拆洗',
-    description: '深度拆洗，除油除垢',
-    price: '189.00',
-    status: 'completed',
-    statusText: '已完成',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
-  },
-  {
-    id: 7,
-    orderNo: '82749196999',
-    title: '水管漏水维修',
-    description: '上门检修，更换配件',
-    price: '99.00',
-    status: 'refund',
-    statusText: '退款中',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
+
+const getOrderList = async () => {
+  console.log("开始获取订单列表")
+  const res = await getOrderListAPI(orderListParams)
+  if(res.code === 200){
+    ordersData.value = res.data.list
+    console.log("获取到的订单列表",ordersData.value)
+      activeTab.value = selectType.type
+
   }
-])
+}
+
+onMounted(() => {
+  getOrderList()
+})
+
+
+
+// const ordersData = ref([
+//   {
+//     id: 1,
+//     orderNo: '82749201934',
+//     title: '专业深度保洁 - 3小时',
+//     description: '包含厨房去油、卫浴除霉、全屋除尘',
+//     price: '299.00',
+//     status: 'pending_payment',
+//     statusText: '待付款',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJRCBsLkRkckGh0YyTG23MOpxmlpW93Yvtb9J6NV3ZXzAHHXyYMlmScOQpYAsFpD50ltl4LmOBeh3jSDhf661Axz4LWNXeW8bwMVr5iI3tOsX_2Sq4GnKuWmsGhc7suvcYILsZiS8L10hU3UG6BTZHnCT8McqGBhQfCO6lqq8RgzQvtdvmMl2f7H8L7OQ3-izDTpaR4oz48gJD2mPUiLapsD6VMdQC-euX7Jr-lAFyizBZuKzMgYcv5WADz1aeyWqlmtMmWgx9KA'
+//   },
+//   {
+//     id: 2,
+//     orderNo: '82749201882',
+//     title: '空调清洗维护 (挂机)',
+//     description: '预约时间：2023-11-20 14:00',
+//     price: '158.00',
+//     status: 'pending_service',
+//     statusText: '待服务',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAbuNXz67uijj--aXdnBeE88Ia18lnUbLcKVVCdMOZtqzIKjRlj6GMSeqdJbJNe_oNJjvYNH0MonVbXaJk17AVt_C7VHrDFZlk15EgtytkGh_Y3hIWkpmb5Qu6iDgE60LvKSsG0YoDK-g1ZrNYMz4mIVI_fp3GGVUeK69RUiGSy8IYN0RBnYre9uHzU9JcTmP3wgTsIBvWoaCsovS-MoRLXKZe5NgnCgDTH5bTmHJGoKI5al9hYvHnxqCgsUoLwJ36-h0LAddO_Gw'
+//   },
+//   {
+//     id: 3,
+//     orderNo: '82749199521',
+//     title: '厨房疏通服务',
+//     description: '服务师傅：李师傅 (已实名认证)',
+//     price: '88.00',
+//     status: 'completed',
+//     statusText: '已完成',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
+//   },
+//   {
+//     id: 4,
+//     orderNo: '82749199123',
+//     title: '全屋甲醛检测',
+//     description: '专业仪器检测，出具报告',
+//     price: '399.00',
+//     status: 'pending_payment',
+//     statusText: '待付款',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJRCBsLkRkckGh0YyTG23MOpxmlpW93Yvtb9J6NV3ZXzAHHXyYMlmScOQpYAsFpD50ltl4LmOBeh3jSDhf661Axz4LWNXeW8bwMVr5iI3tOsX_2Sq4GnKuWmsGhc7suvcYILsZiS8L10hU3UG6BTZHnCT8McqGBhQfCO6lqq8RgzQvtdvmMl2f7H8L7OQ3-izDTpaR4oz48gJD2mPUiLapsD6VMdQC-euX7Jr-lAFyizBZuKzMgYcv5WADz1aeyWqlmtMmWgx9KA'
+//   },
+//   {
+//     id: 5,
+//     orderNo: '82749198234',
+//     title: '冰箱深度清洗',
+//     description: '高温蒸汽杀菌消毒',
+//     price: '129.00',
+//     status: 'pending_service',
+//     statusText: '待服务',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAbuNXz67uijj--aXdnBeE88Ia18lnUbLcKVVCdMOZtqzIKjRlj6GMSeqdJbJNe_oNJjvYNH0MonVbXaJk17AVt_C7VHrDFZlk15EgtytkGh_Y3hIWkpmb5Qu6iDgE60LvKSsG0YoDK-g1ZrNYMz4mIVI_fp3GGVUeK69RUiGSy8IYN0RBnYre9uHzU9JcTmP3wgTsIBvWoaCsovS-MoRLXKZe5NgnCgDTH5bTmHJGoKI5al9hYvHnxqCgsUoLwJ36-h0LAddO_Gw'
+//   },
+//   {
+//     id: 6,
+//     orderNo: '82749197888',
+//     title: '油烟机拆洗',
+//     description: '深度拆洗，除油除垢',
+//     price: '189.00',
+//     status: 'completed',
+//     statusText: '已完成',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
+//   },
+//   {
+//     id: 7,
+//     orderNo: '82749196999',
+//     title: '水管漏水维修',
+//     description: '上门检修，更换配件',
+//     price: '99.00',
+//     status: 'refund',
+//     statusText: '退款中',
+//     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANVmEk-949SUg6SyLBKQrkE-8LP-fDo8lTBhU0GSQJuiv_qSFfWnD2k_FJqpHcQVMuIlsJeyviPukHEUx4FGNEN1dT0K5EFOTgn4YtiEdyQX-f1neCqdn02rFXlygMRP3C_uppbo2zy6liJ-LUx9_3i0V5jSlqroeEWwczmhqCfqhYUIgyVD-eiwhe826FqGE-loLe7Oa7k8Xzy6NaJrwBvERdmATHLMvb1pxyWPr4DsWkK4-FN05jdKcSTkDX44K5z-zLFDfk_g'
+//   }
+// ])
 
 // 根据当前tab过滤订单
 const filteredOrders = computed(() => {
   if (activeTab.value === 'all') {
     return ordersData.value
   }
-  return ordersData.value.filter(order => order.status === activeTab.value)
+  return ordersData.value.filter(order => order.orderStatus === activeTab.value)
 })
 
 // 切换标签页
 const switchTab = (tabValue) => {
+  console.log("获取的tabValue：",tabValue)
   activeTab.value = tabValue
+  console.log("获取的activeTab：",activeTab.value)
   // 可选: 埋点或保持滚动位置
   // uni.vibrateShort({ type: 'light' }) // 轻微震动反馈
 }
@@ -114,8 +163,8 @@ const switchTab = (tabValue) => {
 // 获取状态样式类名
 const getStatusClass = (status) => {
   switch(status) {
-    case 'pending_payment': return 'status-pending-payment'
-    case 'pending_service': return 'status-pending-service'
+    case 'CreateOrder': return 'status-pending-payment'
+    case 'Paid': return 'status-pending-service'
     case 'completed': return 'status-completed'
     case 'refund': return 'status-refund'
     default: return ''
@@ -257,28 +306,28 @@ const navigateTo = (target) => {
       
       <view
         v-for="order in filteredOrders"
-        :key="order.id"
+        :key="order.orderId"
         class="order-card"
       >
         <!-- 卡片头部 -->
         <view class="card-header">
           <text class="order-number">订单编号: {{ order.orderNo }}</text>
-          <text class="order-status" :class="getStatusClass(order.status)">
-            {{ order.statusText }}
+          <text class="order-status" :class="getStatusClass(order.orderStatus)">
+ {{ getOrderStatusText(order.orderStatus) }}
           </text>
         </view>
         
         <!-- 服务内容区域 -->
         <view class="service-info" @tap="viewOrderDetail(order)">
-          <view class="service-image">
-            <image :src="order.imageUrl" mode="aspectFill" lazy-load />
+          <view class="service-image">Name
+            <image :src="order.coverImage" mode="aspectFill" lazy-load />
           </view>
           <view class="service-details">
-            <text class="service-title">{{ order.title }}</text>
-            <text class="service-desc">{{ order.description }}</text>
+            <text class="service-title">{{ order.goodsName }}</text>
+            <text class="service-desc">{{ order.shopName }}</text>
             <view class="price-wrapper">
               <text class="price-symbol">¥</text>
-              <text class="price-number">{{ order.price }}</text>
+              <text class="price-number">{{ order.payAmount }}</text>
             </view>
           </view>
         </view>

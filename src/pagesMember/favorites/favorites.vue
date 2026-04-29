@@ -2,56 +2,8 @@
 import { ref } from 'vue'
 
 // 收藏数据
-const favorites = ref([
-  {
-    id: 1,
-    title: '深度全屋保洁',
-    description: '含客厅、卧室、厨房、卫生间及阳台的基础除尘与高温杀菌',
-    price: '299',
-    originalPrice: '399',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCT0EwILZl3qTm_OUu2XHfj1MZqqxacQ-HevcxhJLG2ZX7NBS4nqgQQcJgYvNTXgjqJjEYzJUqRO2SEMXnRTtJxvqaFuaC6l7OHDIte3qUnYbUIuxzMbHBEOl5TZfwvf_xCkhkYz0MnFlcg7I6dfh0fDVEV3OdyjS28MM_Cvv4JnDwSLRSCGd05B-y9HMpoVLBx-6Mpoge9xJaWURIDESiotwfwpqKbU_RXsjF7SJs91fr0Qogdn82YNBJvTepwBkAYvYWw5cADqw',
-    rating: '4.9',
-    orders: '1.2k+',
-    tags: ['深度清洁', '高温杀菌', '赠送擦窗'],
-    isActive: true
-  },
-  {
-    id: 2,
-    title: '空调加氟清洗',
-    description: '专业空调清洗加氟服务，极速上门，当天完成',
-    price: '158',
-    originalPrice: '220',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_B51LuSAabxvpvhQltygUPSExLqDcfXEkVKerqpfomNM9XpySuXmz4vSZQgKBdw9gRnDAFsNPXt10YlUeMQFbUeGV9yIXxfjS9hkrT236EPld71aqNVrSI94UOYbh-6SpyyZz6LtXaHyrBE-2IN-_x0mEsyOtkK5fBaAHInRApHSBXD_mcrl0wpPJsY6lC1ic4dPxrb-2ENTCh3BLjPx5SIFlbUqbiDGBB0pUvqfs8zgpus07a_b4iyan2yP5OD2orP6V0H6HPQ',
-    rating: '4.8',
-    orders: '800+',
-    tags: ['极速上门', '专业清洗', '当天完成'],
-    isActive: true
-  },
-  {
-    id: 3,
-    title: '日式精细搬家',
-    description: '全程免手，专业打包，家具保护，安全可靠',
-    price: '588',
-    originalPrice: '688',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAQgez4vFcBbESVgJo-JfybzIXs5jjMYd8xrpBDllvyB0w4saBB_nzDC4iYnAvkrUrTh-q-E7NSYOyedH0fE6fPv7zgHQ2aPeVIzsptQgWrcee02VWSbVFYCoUTL2TkEwBB52jfh0YIfetTvhhX8nkey7TiPT3ot87UzgPih1i1drTE-Q4LeW0sE51V1q3tSND7yCuSzV1L3tKQ8wigfcUtYYR0u6XvZJjFsnj8Edr4JUJ2h_5E69TTpN4t2KqHiBI9yYSGPp-Sw',
-    rating: '5.0',
-    orders: '450+',
-    tags: ['全程免手', '专业打包', '家具保护'],
-    isActive: true
-  },
-  {
-    id: 4,
-    title: '全身经络按摩',
-    description: '专业按摩师上门服务，舒缓疲劳，放松身心',
-    price: '198',
-    originalPrice: '268',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHGIVXMQ8Tnzdl1j5MoII59FaRaAv0JJnxxTyqly56fcuHkYu0X8K9QaUOXiChKd05doIoIUX7op0jRtmZjx5y93Pzu2_f_hONXa21JGw3rAtqftoYSRhI_P21TSsB_klx4lkqt5AzUa4xknQUcuyNjZ1ekiQhnB6INMe5ybMornuj4nMdpqoeIK6rIIMy1m0P6YJHTTtpEKfsGO67Togyk-2vuWJOtgbNCKbdpeLkWEa01rshZg8P1mrkNRxKJAy_-0qznVGo9g',
-    rating: '4.9',
-    orders: '2.1k+',
-    tags: ['专业按摩', '上门服务', '舒缓疲劳'],
-    isActive: true
-  }
-])
+const favorites = ref([])
+
 
 // 筛选状态
 const filterType = ref('all') // all, active, inactive
@@ -173,9 +125,9 @@ const favoriteCount = () => {
             <text class="service-desc">{{ item.description }}</text>
             
             <!-- 标签 -->
-            <view class="tag-list">
+            <!-- <view class="tag-list">
               <text class="tag" v-for="tag in item.tags" :key="tag">{{ tag }}</text>
-            </view>
+            </view> -->
             
             <!-- 评分和销量 -->
             <view class="meta-info">

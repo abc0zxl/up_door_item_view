@@ -263,9 +263,7 @@ onShow( async () => {
 
 })
 
-// 在orderPay.vue的onShow或onLoad中添加
-onShow(() => {
-})
+
 
 // 页面卸载时移除监听
 onUnload(() => {

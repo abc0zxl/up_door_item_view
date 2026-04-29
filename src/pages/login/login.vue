@@ -1,24 +1,31 @@
 <script setup>
 import { ref } from 'vue'
 import { useMemberStore } from '@/stores/modules/member'
+import { LoginAPI } from '@/services/user'
   // 登录成功后，跳转到首页
 
   const usertoken = ref('')
-const memberToken=()=>{
-    if (!usertoken.value) {
-    uni.showToast({ title: '请输入token', icon: 'none' })
-    return
-  }
-  //保存会员信息
-   const memberStore=useMemberStore()
-   memberStore.setProfile({
-    id: 1,
-    nickname: '测试用户',
-    token: usertoken.value
-  })
-  //将res.result的属性解开到和memberStore一致
-  //  memberStore.setProfile.token(res.result)
+     const memberStore=useMemberStore()
+     const phone = ref('')
+     const pwd = ref('')
+     const userInfo = ref({})
+const memberToken= async ()=>{
 
+      const res = await LoginAPI({
+        phone: 12780269789,
+        password: 'gyJiYjlsNQXrEF1',
+        rememberMe: true
+      })
+      console.log("身份消息是",res.data)
+      if(res.code===200){
+        userInfo.value = res.data
+        memberStore.setProfile({
+        userId: userInfo.value.userInfo.userId,
+        nickname: userInfo.value.userInfo.nickname,
+        token: userInfo.value.token,
+        refreshToken: userInfo.value.refreshToken
+        })
+      }
    uni.showToast({title:'登录成功',icon:'success'})
   //设置超时
    setTimeout(()=>{
@@ -29,14 +36,30 @@ const memberToken=()=>{
   },1000)
   console.log(memberStore.profile)
 }
-const handleLogin=()=>{
-
-      if (!this.phone || !this.pwd) {
-        uni.showToast({ title: '请输入手机号和密码', icon: 'none' })
-        return
+const handleLogin=  async ()=>{
+      const res = await LoginAPI({
+        phone: phone.value,
+        password: pwd.value, 
+        rememberMe: true
+      })
+      if(res.code===200){
+        userInfo.value = res.data
+        memberStore.setProfile({
+        userId: userInfo.value.userInfo.id,
+        nickname: userInfo.value.userInfo.nickname,
+        token: userInfo.value.token,
+        refreshToken: userInfo.value.refreshToken
+        })
       }
-      // 这里可以加你的登录接口请求
-      uni.showToast({ title: '登录成功', icon: 'success' })
+
+   uni.showToast({title:'登录成功',icon:'success'})
+  //设置超时
+   setTimeout(()=>{
+    // uni.navigateTo({ url: '/pages/index/index' })
+    //此时跳转的页面不是tobar，所以会报错
+    uni.switchTab({url:'/pages/index/index'})
+    // uni.navigateBack()
+  },1000)
     }
 
 const toForget=()=>{
@@ -95,7 +118,7 @@ const onGetphonenumberSimple=async()=>{
 
       <!-- 登录按钮 -->
       <button class="login-btn" @click="handleLogin">登录</button>
-      <button class="login-btn" @click="memberToken">存储token</button>
+      <button class="login-btn" @click="memberToken">临时身份登录</button>
 
     </view>
 

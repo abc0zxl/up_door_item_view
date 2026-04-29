@@ -1,19 +1,20 @@
 <script setup>
 import { ref , onMounted, computed } from 'vue';
+import { onShow } from '@dcloudio/uni-app'
 import { getCartListAPI } from '@/services/cart.js'
+import { useMemberStore } from '@/stores/modules/member.js'
 
 const cartList = ref([])   //总购物车列表
 const cartList_R = ref([])  //记录被选中的购物车列表
-const params = {
-  userId:10012
-}
+const memberStore = useMemberStore()
+
 const selectedItems = ref([]);
 const allPrice = ref(0);
 // const recommendList = ref([])
 // 获取购物车列表
 
 const getCarList = async () => {
-  const res = await getCartListAPI(params)
+  const res = await getCartListAPI({userId:memberStore.profile.userId})
   cartList.value = res.data
   console.log("购物车列表",cartList.value)
   // recommendList.value = res.data
@@ -34,7 +35,7 @@ const getCarList = async () => {
   // console.log("复选框列表",selectedItems.value)
   // console.log("推荐列表",recommendList.value)
 } 
-onMounted(() => {
+onShow(() => {
   getCarList()
 })
 

@@ -6,12 +6,13 @@ import { getCategoryListAPI } from '@/services/catelog';
 // import IndexNavber from './components/indexNavber.vue';
 const bannerList = ref([])
 const categoryList = ref([])
+const categoryId = ref(1)
 const params = {
-  categoryId: 2,
+  categoryId: categoryId.value,
   sortBy: "consequat exercitation ullamco qui",
   cityCode: "97",
   pageNum: 1,
-  pageSize: 3
+  pageSize: 100
 }
 
 
@@ -52,12 +53,20 @@ onMounted(() => {
 // }
 
 // 激活的索引
-const activeIndex = ref(0)
+// const activeIndex = ref(0)
+const activeIndex = async (index) => {
+  params.categoryId = index
+    console.log("开始申请分类数据")
+    const res = await getCategoryListAPI(params)
+    console.log("分类数据", res)
+    categoryList.value = res.data.list || []
+    console.log(categoryList.value)
+}
 
 // 左侧菜单
 const menuList = ref([
-  { name: "保洁" },{ name: "清洗" },{ name: "搬家" },{ name: "月嫂" },
-  { name: "维修" },{ name: "洗护" },{ name: "甲醛" },{ name: "数码" }
+  { name: "保洁" },{ name: "维修" },{ name: "换洗" },{ name: "搬运" },
+  { name: "管道" },{ name: "喂养" }
 ])
 
 // 常用服务
@@ -108,8 +117,8 @@ const specialList = ref([
           v-for="(item, index) in menuList"
           :key="index"
           class="menu-item"
-          :class="activeIndex === index ? 'active' : ''"
-          @click="activeIndex = index"
+          :class="params.categoryId-1 === index ? 'active' : ''"
+          @click="activeIndex(index+1)"
         >
           {{ item.name }}
         </view>
@@ -306,7 +315,7 @@ const specialList = ref([
   margin-bottom: 40rpx;
 }
 .grid-item {
-  width: 200rpx;
+  width: 250rpx;
   background: #fff;
   border-radius: 20rpx;
   padding: 30rpx 0;
@@ -315,8 +324,8 @@ const specialList = ref([
   align-items: center;
 }
 .item-icon {
-  width: 70rpx;
-  height: 70rpx;
+  width: 90rpx;
+  height: 90rpx;
   background: #fff7ed;
   border-radius: 50%;
   display: flex;
